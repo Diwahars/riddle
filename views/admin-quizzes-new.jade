@@ -1,0 +1,69 @@
+//
+   Created by dsds on 10/10/15.
+extends admin
+
+block view
+  a#save-btn.button.button-primary.float-right(href="/admin/quizzes") Save
+  a#cancel-btn.button.float-right(href="/admin/quizzes") Cancel
+  h1#quiz-title.editable
+  div.row
+    div#quiz-content.editable
+  form#hide-form(action="/admin/quizzes/new", method="POST")
+    input#form-title(name="title")
+    input#form-content(name="content")
+
+block footer
+  script(type="text/javascript", src="/javascripts/medium-editor.min.js")
+  script.
+    new MediumEditor('#quiz-title', {
+      toolbar:     false,
+      placeholder: {
+        text: 'New Quiz'
+      },
+      paste:       {
+        forcePlainText: true
+      }
+    });
+    new MediumEditor('#quiz-content', {
+      placeholder: {
+        text: 'Content...'
+      },
+      paste:       {
+        forcePlainText: true
+      }
+    });
+
+    function $$(sel) {
+      return document.getElementById(sel);
+    }
+    $$('save-btn').addEventListener('click', function (event) {
+      var title = $$('quiz-title').innerText.trim();
+      var content = $$('quiz-content').innerHTML;
+      var contentText = $$('quiz-content').innerText.trim();
+      if (!title.length) {
+        alert('Title could not be empty!');
+        event.preventDefault();
+        return false;
+      }
+      if (!contentText.length) {
+        alert('Content could not be empty!');
+        event.preventDefault();
+        return false;
+      }
+      $$('form-title').value = title;
+      $$('form-content').value = content;
+      $$('hide-form').submit();
+      event.preventDefault();
+      return false;
+    }, false);
+
+    $$('cancel-btn').addEventListener('click', function (event) {
+      var title = $$('quiz-title').innerText.trim();
+      var contentText = $$('quiz-content').innerText.trim();
+      if (title.length || contentText.length) {
+        if(!confirm('Are you sure?')) {
+          event.preventDefault();
+          return false;
+        }
+      }
+    });

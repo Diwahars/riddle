@@ -1,0 +1,32 @@
+//
+   Created by dsds on 10/10/15.
+extends admin
+
+block view
+  a.button.button-primary.float-right(href="/admin/quizzes/new") New Quiz
+  h1 Quizzes
+  p #{data.total} quiz(s) in total.
+  table.u-full-width
+    thead
+      tr
+        th
+          a(href="?s=_id") №
+        th
+          a(href="?s=title") title
+        th
+          a(href="?s=_id") created at
+    tbody
+      each quizdata, index in data.quizzes
+        tr
+          td #{index + data.page * +data.quizzesPerPage + 1}
+          td
+            a(href="/admin/quizzes/" + quizdata._id) #{quizdata.title}
+          td #{ObjectId(quizdata._id).getTimestamp().toLocaleString()}
+  - var pageCount = Math.ceil(data.total / data.quizzesPerPage);
+  ul.pagination
+    - for (var x = 0; x < pageCount; ++x)
+      li
+        if x != data.page
+          a(href="?s=" + data.sort + "&p=" + x)= x + 1
+        else
+          a.current= x + 1

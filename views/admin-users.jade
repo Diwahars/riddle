@@ -1,0 +1,33 @@
+//
+   Created by dsds on 10/10/15.
+extends admin
+
+block view
+  h1 Users
+  p #{data.total} user(s) in total.
+  table.u-full-width
+    thead
+      tr
+        th
+          a(href="?s=_id") №
+        th
+          a(href="?s=username") username
+        th
+          a(href="?s=_id") created at
+        th
+          a(href="?s=group") group
+    tbody
+      each userdata, index in data.users
+        tr
+          td #{index + data.page * data.usersPerPage + 1}
+          td #{userdata.username}
+          td #{ObjectId(userdata._id).getTimestamp().toLocaleString()}
+          td #{userdata.group}
+  - var pageCount = Math.ceil(data.total / data.usersPerPage);
+  ul.pagination
+    - for (var x = 0; x < pageCount; ++x)
+      li
+        if x != data.page
+          a(href="?s=" + data.sort + "&p=" + x)= x + 1
+        else
+          a.current= x + 1
