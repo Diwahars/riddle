@@ -12,10 +12,11 @@ block content
       nav
         a.button(href="/logout") Logout
     div.row.dashboard
-      a.three.columns(href="/admin/") Status
-      a.three.columns(href="/admin/users") Users
-      a.three.columns(href="/admin/quizzes") Quizzes
-      a.three.columns(href="/admin/settings") Site Settings
+      a(href="/admin/", class=page == 'status' ? 'current' : '') Status
+      a(href="/admin/users", class=page == 'users' ? 'current' : '') Users
+      a(href="/admin/quizzes", class=page == 'quizzes' ? 'current' : '') Quizzes
+      a(href="/admin/settings", class=page == 'settings' ? 'current' : '') Site Settings
   div.container.admin
     div.row
-      p Hello, #{user.username}
+      block view
+  block footer
