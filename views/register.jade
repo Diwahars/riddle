@@ -1,0 +1,30 @@
+//
+   Created by dsds on 10/10/15.
+extends layout
+
+block content
+  div.header
+    h3
+      a(href="/").title= title
+    nav
+      if user
+        a.button(href="/logout") Logout
+  div.container
+    div.row
+      div.one-half.column
+        h1 Register
+        if message && message.length
+          p.error #{message}
+        form(action="/register",method="post")
+          div
+            label Username
+            input(type="text",name="username").u-full-width
+          div
+            label Password
+            input(type="password",name="password").u-full-width
+          div
+            input(type="submit",value="Register").button.button-primary
+          div
+            | ...or
+            =" "
+            a(href="/login") login

@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  div.header
+    h3
+      a(href="/").title= title
+    nav
+      if !user
+        a.button(href="/login") Login
+      else
+        a.button(href="/logout") Logout
+  div.container
+    div.row
+      h1= status + ' ' + message

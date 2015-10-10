@@ -1,0 +1,4 @@
+{
+  "title": "Riddle",
+  "mongodb": "mongodb://admin:admin@localhost:27017/riddle"
+}

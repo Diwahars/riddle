@@ -1,0 +1,21 @@
+//
+   Created by dsds on 10/10/15.
+extends layout
+
+block content
+  div.header
+    div.row
+      h3
+        a(href="/").title= title
+        |  |
+        strong  admin
+      nav
+        a.button(href="/logout") Logout
+    div.row.dashboard
+      a.three.columns(href="/admin/") Status
+      a.three.columns(href="/admin/users") Users
+      a.three.columns(href="/admin/quizzes") Quizzes
+      a.three.columns(href="/admin/settings") Site Settings
+  div.container.admin
+    div.row
+      p Hello, #{user.username}
