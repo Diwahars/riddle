@@ -27,6 +27,7 @@ module.exports.pages = function (req, res, next) {
                         title:    config.title,
                         user:     req.user,
                         page:     'quizzes',
+                        message:  req.flash('success'),
                         data:     {
                             page:           offset,
                             quizzes:        quizzes,
@@ -42,10 +43,18 @@ module.exports.pages = function (req, res, next) {
 };
 
 module.exports.id = function (req, res, next) {
-    res.render('admin-quizzes-new', {
-        title: config.title,
-        user:  req.user,
-        page:  'quizzes'
+    Quiz.findById(req.params.id, function (err, quiz) {
+        if (err) {
+            next(err);
+        } else {
+            res.render('admin-quizzes-new', {
+                title:   config.title,
+                user:    req.user,
+                page:    'quizzes',
+                data:    quiz,
+                message: req.flash('success')
+            });
+        }
     });
 };
 
@@ -59,16 +68,46 @@ module.exports.getNew = function (req, res, next) {
 
 module.exports.postNew = function (req, res, next) {
     if (req.body.title && req.body.title.length) {
-        var quiz = new Quiz({
-            title:   req.body.title,
-            content: req.body.content || ''
-        });
-        quiz.save(function (err, quiz) {
-            if (err) {
-                next(err);
-            } else {
-                res.redirect('/admin/quizzes/' + quiz._id);
-            }
-        });
+        if (req.body.id) {
+            // Update
+            Quiz.findOneAndUpdate({_id: req.body.id}, {
+                title:   req.body.title,
+                content: req.body.content || ''
+            }, function (err, quiz) {
+                if (err) {
+                    next(err);
+                } else {
+                    req.flash('success', 'Quiz saved.');
+                    res.redirect('/admin/quizzes/' + quiz._id);
+                }
+            });
+        } else {
+            // Create
+            var quiz = new Quiz({
+                title:   req.body.title,
+                content: req.body.content || ''
+            });
+            quiz.save(function (err, quiz) {
+                if (err) {
+                    next(err);
+                } else {
+                    req.flash('success', 'Quiz created.');
+                    res.redirect('/admin/quizzes/');
+                }
+            });
+        }
+    } else {
+        next(new Error('Missing title'));
     }
+};
+
+module.exports.delete = function (req, res, next) {
+    Quiz.findOneAndRemove({_id: req.params.id}, function (err) {
+        if (err) {
+            next(err);
+        } else {
+            req.flash('success', 'Quiz removed.');
+            res.redirect('/admin/quizzes/');
+        }
+    });
 };

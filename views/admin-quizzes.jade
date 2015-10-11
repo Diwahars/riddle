@@ -5,6 +5,8 @@ extends admin
 block view
   a.button.button-primary.float-right(href="/admin/quizzes/new") New Quiz
   h1 Quizzes
+  if message && message.length
+    p.success #{message}
   p #{data.total} quiz(s) in total.
   table.u-full-width
     thead

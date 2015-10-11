@@ -3,18 +3,30 @@
 extends admin
 
 block view
-  a#save-btn.button.button-primary.float-right(href="/admin/quizzes") Save
-  a#cancel-btn.button.float-right(href="/admin/quizzes") Cancel
-  h1#quiz-title.editable
+  if message && message.length
+    p.success #{message}
   div.row
-    div#quiz-content.editable
+    a#save-btn.button.button-primary.float-right(href="/admin/quizzes") Save
+    a#cancel-btn.button.float-right(href="/admin/quizzes") Cancel
+    h1#quiz-title.editable= data ? data.title : ''
+  div.row
+    div#quiz-content.editable !{data ? data.content : ''}
+  br
+  if data
+    form(action="/admin/quizzes/delete/" + data._id, method="POST")
+      input.button.button-danger(type="submit", value="Delete")
   form#hide-form(action="/admin/quizzes/new", method="POST")
     input#form-title(name="title")
     input#form-content(name="content")
+    input#form-id(name="id")
 
 block footer
   script(type="text/javascript", src="/javascripts/medium-editor.min.js")
   script.
+    var modified = false;
+    function $$(sel) {
+      return document.getElementById(sel);
+    }
     new MediumEditor('#quiz-title', {
       toolbar:     false,
       placeholder: {
@@ -22,7 +34,8 @@ block footer
       },
       paste:       {
         forcePlainText: true
-      }
+      },
+      imageDragging: false
     });
     new MediumEditor('#quiz-content', {
       placeholder: {
@@ -30,12 +43,15 @@ block footer
       },
       paste:       {
         forcePlainText: true
-      }
+      },
+      imageDragging: false
     });
-
-    function $$(sel) {
-      return document.getElementById(sel);
-    }
+    $$('quiz-title').addEventListener('keydown', function () {
+      modified = true;
+    });
+    $$('quiz-content').addEventListener('keydown', function () {
+      modified = true;
+    });
     $$('save-btn').addEventListener('click', function (event) {
       var title = $$('quiz-title').innerText.trim();
       var content = $$('quiz-content').innerHTML;
@@ -52,6 +68,7 @@ block footer
       }
       $$('form-title').value = title;
       $$('form-content').value = content;
+      !{data ? '$$("form-id").value = "' + data._id + '";' : ''}
       $$('hide-form').submit();
       event.preventDefault();
       return false;
@@ -61,7 +78,7 @@ block footer
       var title = $$('quiz-title').innerText.trim();
       var contentText = $$('quiz-content').innerText.trim();
       if (title.length || contentText.length) {
-        if(!confirm('Are you sure?')) {
+        if(modified && !confirm('Are you sure?')) {
           event.preventDefault();
           return false;
         }

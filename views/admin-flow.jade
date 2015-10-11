@@ -1,0 +1,18 @@
+//
+   Created by dsds on 10/11/15.
+extends admin
+
+block view
+  a.button.button-primary.float-right(href="/admin/flow/save") Save
+  h1 Flow
+  if message && message.length
+    p.success #{message}
+  p Use ctrl+mouse to move an entry, click to select entries or edges, select & backspace to delete a edge.
+  div.row.flow
+  div.row.data-table
+
+block footer
+  script(type="text/javascript", src="/javascripts/d3.v3.min.js")
+  script(type="text/javascript").
+    var data = !{JSON.stringify(data)};
+  script(type="text/javascript", src="/javascripts/flow.js")
