@@ -10,7 +10,7 @@ block content
       else
         if user.group === 'admin'
           a.button(href="/admin") Admin
-        a.button(href="/logout") Logout
+        a.button(href="/logout") Logout (#{user.username})
   div.container
     div.row
       if !user

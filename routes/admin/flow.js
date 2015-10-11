@@ -18,25 +18,9 @@ module.exports.sort = function (req, res, next) {
                 quizData[quiz._id] = {
                     title: quiz.title,
                     start: quiz.start,
-                    next:  quiz.next,
-                    prev:  quizData[quiz._id] ? quizData[quiz._id].prev : []
+                    next:  quiz.next
                 };
-                quiz.next.forEach(function (nextId) {
-                    if (quizData[nextId]) {
-                        quizData[nextId].prev.push(quiz._id);
-                    } else {
-                        quizData[nextId]      = {};
-                        quizData[nextId].prev = [quiz._id];
-                    }
-                });
             });
-            for (var id in quizData) {
-                if (quizData.hasOwnProperty(id)) {
-                    if (!quizData[id].title) {
-                        delete quizData[id];
-                    }
-                }
-            }
             res.render('admin-flow', {
                 title: config.title,
                 user:  req.user,

@@ -8,7 +8,7 @@ block content
       a(href="/").title= title
     nav
       if user
-        a.button(href="/logout") Logout
+        a.button(href="/logout") Logout (#{user.username})
   div.container
     div.row
       div.one-half.column

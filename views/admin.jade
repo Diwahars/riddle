@@ -10,7 +10,7 @@ block content
         |  |
         strong  admin
       nav
-        a.button(href="/logout") Logout
+        a.button(href="/logout") Logout (#{user.username})
     div.row.dashboard
       a(href="/admin/", class=page == 'status' ? 'current' : '') Status
       a(href="/admin/users", class=page == 'users' ? 'current' : '') Users

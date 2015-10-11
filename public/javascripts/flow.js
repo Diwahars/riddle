@@ -6,6 +6,10 @@
 // Original author: http://bl.ocks.org/rkirsling/5001347
 // Modified by shuding
 (function (window, data) {
+    window.keyData  = {};
+    window.initData = {};
+    window.typeLock = 0;
+
     var width = 960, height = 500;
 
     var svg = d3.select('.flow').append('svg').attr('oncontextmenu', 'return false;').attr('width', width).attr('height', height);
@@ -109,6 +113,8 @@
         // update existing nodes (reflexive & selected visual states)
         circle.selectAll('circle').style('fill', function (d) {
             return (d === selected_node) ? 'yellow' : '#33C3F0';
+        }).style('stroke', function (d) {
+            return initData[d.id] ? '#C1F0FF' : '';
         });
 
         // add new nodes
@@ -116,6 +122,8 @@
 
         g.append('svg:circle').attr('class', 'node').attr('r', 22).style('fill', function (d) {
             return (d === selected_node) ? 'yellow' : '#33C3F0';
+        }).style('stroke', function (d) {
+            return initData[d.id] ? '#C1F0FF' : '';
         }).on('mouseover', function (d) {
             d3.select(this).attr('transform', 'scale(1.2)');
         }).on('mouseout', function (d) {
@@ -179,8 +187,6 @@
                 link            = {
                     source: source,
                     target: target,
-                    lKey:   '',
-                    rKey:   '',
                     left:   false,
                     right:  false
                 };
@@ -207,6 +213,8 @@
         // set the graph in motion
         force.start();
     }
+
+    window.restart = restart;
 
     function mousedown() {
         // prevent I-bar on drag
@@ -247,6 +255,9 @@
 
     function keydown() {
         //d3.event.preventDefault();
+        if (typeLock) {
+            return;
+        }
 
         if (lastKeyDown !== -1) {
             return;
@@ -276,6 +287,10 @@
     }
 
     function keyup() {
+        if (typeLock) {
+            return;
+        }
+
         lastKeyDown = -1;
 
         // ctrl
@@ -342,16 +357,26 @@
 
         if (selected_link) {
             html += '<th>From</th><th>Key</th><th>To</th></thead><tbody>';
-
-            console.log(selected_link);
             if (selected_link.left) {
+                if (!keyData[selected_link.target.id]) {
+                    keyData[selected_link.target.id] = {};
+                }
+                if (!keyData[selected_link.target.id][selected_link.source.id]) {
+                    keyData[selected_link.target.id][selected_link.source.id] = '';
+                }
                 html += '<tr><td>' + data[selected_link.target.id].title + '</td>';
-                html += '<td><input class="key" type="text" value="' + selected_link.lKey + '"></td>';
+                html += '<td><input class="key" type="text" onfocus="typeLock++" onblur="typeLock--" value="' + keyData[selected_link.target.id][selected_link.source.id] + '" onchange="keyData[' + "'" + selected_link.target.id + "'][" + "'" + selected_link.source.id + "'] = this.value" + '"></td>';
                 html += '<td>' + data[selected_link.source.id].title + '</td></tr>';
             }
             if (selected_link.right) {
+                if (!keyData[selected_link.source.id]) {
+                    keyData[selected_link.source.id] = {};
+                }
+                if (!keyData[selected_link.source.id][selected_link.target.id]) {
+                    keyData[selected_link.source.id][selected_link.target.id] = '';
+                }
                 html += '<tr><td>' + data[selected_link.source.id].title + '</td>';
-                html += '<td><input class="key" type="text" value="' + selected_link.rKey + '"></td>';
+                html += '<td><input class="key" type="text" onfocus="typeLock++" onblur="typeLock--" value="' + keyData[selected_link.source.id][selected_link.target.id] + '" onchange="keyData[' + "'" + selected_link.source.id + "'][" + "'" + selected_link.target.id + "'] = this.value" + '"></td>';
                 html += '<td>' + data[selected_link.target.id].title + '</td></tr>';
             }
 
@@ -359,12 +384,53 @@
         } else if (selected_node) {
             links.forEach(parseLink);
 
-            html += '<th>Quiz</th><th>Previous</th><th>Next</th></tr></thead><tbody><tr>';
+            html += '<th>Quiz</th><th>Previous</th><th>Next</th><th>Initially</th></tr></thead><tbody><tr>';
             html += '<td><a href="/admin/quizzes/' + selected_node.id + '">' + data[selected_node.id].title + '</a></td>';
             html += '<td>' + getLinkData(selected_node.id, -1) + '</td>';
             html += '<td>' + getLinkData(selected_node.id, 1) + '</td>';
+            html += '<td><input class="key" type="checkbox" ' + (initData[selected_node.id] ? 'checked="checked"' : '') + ' onchange="initData[' + "'" + selected_node.id + "'" + '] = this.checked; restart();"></td>';
             html += '</tr></tbody></table>';
         }
         dataTable.innerHTML = html;
     }
+
+    document.getElementById('save').addEventListener('click', function (event) {
+        var id, _id;
+
+        for (id in data) {
+            if (data.hasOwnProperty(id)) {
+                data[id].start = false;
+                data[id].next  = [];
+            }
+        }
+
+        for (id in initData) {
+            if (initData.hasOwnProperty(id)) {
+                data[id].start = initData[id] == true;
+            }
+        }
+
+        for (id in keyData) {
+            if (keyData.hasOwnProperty(id)) {
+                var kd = keyData[id];
+                for (_id in kd) {
+                    if (kd.hasOwnProperty(_id)) {
+                        if (kd[_id].length) {
+                            data[id].next.push({
+                                id:  _id,
+                                key: kd[_id]
+                            });
+                        } else {
+                            alert('!');
+                            event.preventDefault();
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        console.log(data);
+        return false;
+    }, false);
 })(window, data);

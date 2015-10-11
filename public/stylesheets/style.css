@@ -180,7 +180,7 @@ path.link.hidden {
 }
 circle.node {
   cursor: pointer;
-  stroke-width: 0;
+  stroke-width: 6px;
 }
 text {
   font-size: 13px;
