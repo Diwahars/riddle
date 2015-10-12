@@ -6,15 +6,21 @@ block content
       a(href="/").title= title
     nav
       if !user
-        a.button(href="/login") Login
+        a.button(href="/login")= __("Login")
       else
         if user.group === 'admin'
-          a.button(href="/admin") Admin
-        a.button(href="/logout") Logout (#{user.username})
+          a.button(href="/admin")= __("Admin")
+        a.button(href="/logout") #{__("Logout")} (#{user.username})
   div.container
     div.row
       if !user
-        p Welcome to #{title}
-        a.button.button-primary(href="/register") Register
+        p #{__("Welcome to")} #{title}
+        a.button.button-primary(href="/register")= __("Register")
+        span= " "
+        a.button.button-primary(href="/login")= __("Login")
       else
         p Hello, #{user.username}
+        ul
+          each quiz in data
+            li
+              a(href="/quiz/" + quiz._id)= quiz.title

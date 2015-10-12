@@ -1,0 +1,22 @@
+{
+	"Welcome to": "欢迎访问",
+	"Login": "登陆",
+	"Register": "注册",
+	"Username": "用户名",
+	"Password": "密码",
+	"...or": "……或者",
+	"register": "注册",
+	"Admin": "管理",
+	"Logout": "登出",
+	"Status": "状态",
+	"Users": "用户",
+	"Quizzes": "谜题",
+	"Flow": "定向",
+	"Site Settings": "站点设置",
+	"Save": "保存",
+	"Use ctrl+mouse to move an entry, click to select entries or edges, select & backspace to delete a edge.": "拖拽新建推理方向，按住 Ctrl+鼠标挪动，点击可以选中谜题或者边，按删除键可以删掉一条边。",
+	"Quiz": "谜题",
+	"username": "用户名",
+	"created at": "创建时间",
+	"group": "用户组"
+}

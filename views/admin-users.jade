@@ -11,11 +11,11 @@ block view
         th
           a(href="?s=_id") №
         th
-          a(href="?s=username") username
+          a(href="?s=username")= __("username")
         th
-          a(href="?s=_id") created at
+          a(href="?s=_id")= __("created at")
         th
-          a(href="?s=group") group
+          a(href="?s=group")= __("group")
     tbody
       each userdata, index in data.users
         tr

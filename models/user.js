@@ -7,9 +7,13 @@ var Schema                = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 
 var User = new Schema({
-    group: {
-        type: String,
+    group:  {
+        type:    String,
         default: 'user'
+    },
+    passed: {
+        type:    [String],
+        default: []
     }
 });
 

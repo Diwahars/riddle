@@ -106,6 +106,25 @@ module.exports.delete = function (req, res, next) {
         if (err) {
             next(err);
         } else {
+            Quiz.find(function (err, quizzes) {
+                if (err) {
+                    next(err);
+                } else {
+                    quizzes.forEach(function (quiz) {
+                        var rm = -1;
+                        quiz.next.forEach(function (n, index) {
+                            if (n.id == req.params.id) {
+                                rm = index;
+                            }
+                        });
+                        if (rm >= 0) {
+                            quiz.next.splice(rm, 1);
+                            quiz.save(function () {
+                            });
+                        }
+                    });
+                }
+            });
             req.flash('success', 'Quiz removed.');
             res.redirect('/admin/quizzes/');
         }

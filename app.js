@@ -10,6 +10,7 @@ var compression   = require('compression');
 var flash         = require('connect-flash');
 var LocalStrategy = require('passport-local').Strategy;
 var mongoose      = require('mongoose');
+var i18n          = require("i18n");
 var config        = require('./config.json');
 
 var User = require('./models/user');
@@ -48,7 +49,18 @@ mongoose.connect(config.mongodb, function (err) {
     }
 });
 
+i18n.configure({
+    locales: ['en', 'zh'],
+    cookie: 'locale',
+    directory: __dirname + '/locales'
+});
+
 app.use(compression());
+app.use(i18n.init);
+app.use(function (req, res, next) {
+    req.setLocale(config.lang);
+    return next();
+});
 app.use('/', routes);
 app.use('/admin', function (req, res, next) {
     if (!req.user || req.user.group !== 'admin') {

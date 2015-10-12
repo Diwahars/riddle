@@ -1,0 +1,24 @@
+//
+   Created by dsds on 10/12/15.
+
+extends layout
+block content
+   div.header
+      h3
+         a(href="/").title= title
+      nav
+         if !user
+            a.button(href="/login") Login
+         else
+            if user.group === 'admin'
+               a.button(href="/admin") Admin
+            a.button(href="/logout") Logout (#{user.username})
+   div.container
+      div.row
+         if !user
+            p Welcome to #{title}
+            a.button.button-primary(href="/register") Register
+         else
+            h1= data.title
+            div
+               !{data.content}

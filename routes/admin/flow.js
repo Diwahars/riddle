@@ -30,3 +30,38 @@ module.exports.sort = function (req, res, next) {
         }
     });
 };
+
+module.exports.save = function (req, res, next) {
+    var data = req.body.data;
+    try {
+        data = JSON.parse(data);
+    } catch (err) {
+        return next(err);
+    }
+
+    var cnt = 0, scopeErr = null;
+    for (var id in data) {
+        if (data.hasOwnProperty(id)) {
+            cnt++;
+            if (!scopeErr) {
+                Quiz.findByIdAndUpdate(id, {
+                    start: data[id].start,
+                    next:  data[id].next
+                }, function (err) {
+                    if (scopeErr) {
+                        return;
+                    }
+                    if (err) {
+                        scopeErr = err;
+                        next(err);
+                    } else {
+                        if (--cnt == 0) {
+                            req.flash('success', 'Saved successfully!');
+                            res.redirect('/admin/quizzes');
+                        }
+                    }
+                });
+            }
+        }
+    }
+};

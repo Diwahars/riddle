@@ -17,5 +17,6 @@ router.get('/settings', settings);
 
 router.post('/quizzes/new', quizzes.postNew);
 router.post('/quizzes/delete/:id', quizzes.delete);
+router.post('/flow/save', flow.save);
 
 module.exports = router;

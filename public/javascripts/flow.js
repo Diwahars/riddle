@@ -10,7 +10,12 @@
     window.initData = {};
     window.typeLock = 0;
 
-    var width = 960, height = 500;
+    var _ = function (str) {
+        return i18n[str] ? i18n[str] : str;
+    };
+
+    var width    = 960, height = 500;
+    var nodeData = {};
 
     var svg = d3.select('.flow').append('svg').attr('oncontextmenu', 'return false;').attr('width', width).attr('height', height);
 
@@ -19,15 +24,6 @@
     //  - reflexive edges are indicated on the node (as a bold black circle).
     //  - links are always source < target; edge directions are set by 'left' and 'right'.
     var nodes = [], links = [];
-
-    for (var id in data) {
-        if (data.hasOwnProperty(id)) {
-            nodes.push({
-                id:        id,
-                reflexive: false
-            });
-        }
-    }
 
     // init D3 force layout
     var force = d3.layout.force().nodes(nodes).links(links).size([width, height]).linkDistance(150).charge(-600).on('tick', tick);
@@ -107,6 +103,7 @@
         // circle (node) group
         // NB: the function arg is crucial here! nodes are known by id, not by index!
         circle = circle.data(nodes, function (d) {
+            nodeData[d.id] = d;
             return d.id;
         });
 
@@ -302,12 +299,9 @@
         putData();
     }
 
-    // app starts here
-    svg.on('mousedown', mousedown).on('mousemove', mousemove).on('mouseup', mouseup);
-    d3.select(window).on('keydown', keydown).on('keyup', keyup);
-    restart();
-
     var dataTable = window.document.getElementsByClassName('data-table')[0];
+    var hideForm  = window.document.getElementById('hide-form');
+    var formData  = window.document.getElementById('form-data');
     var linkData;
 
     function getLinkData(id, dir) {
@@ -384,7 +378,7 @@
         } else if (selected_node) {
             links.forEach(parseLink);
 
-            html += '<th>Quiz</th><th>Previous</th><th>Next</th><th>Initially</th></tr></thead><tbody><tr>';
+            html += '<th>' + _('Quiz') + '</th><th>' + _('Previous') + '</th><th>' + _('Next') + '</th><th>' + _('Initially') + '</th></tr></thead><tbody><tr>';
             html += '<td><a href="/admin/quizzes/' + selected_node.id + '">' + data[selected_node.id].title + '</a></td>';
             html += '<td>' + getLinkData(selected_node.id, -1) + '</td>';
             html += '<td>' + getLinkData(selected_node.id, 1) + '</td>';
@@ -395,7 +389,7 @@
     }
 
     document.getElementById('save').addEventListener('click', function (event) {
-        var id, _id;
+        var id;
 
         for (id in data) {
             if (data.hasOwnProperty(id)) {
@@ -410,27 +404,100 @@
             }
         }
 
-        for (id in keyData) {
-            if (keyData.hasOwnProperty(id)) {
-                var kd = keyData[id];
-                for (_id in kd) {
-                    if (kd.hasOwnProperty(_id)) {
-                        if (kd[_id].length) {
-                            data[id].next.push({
-                                id:  _id,
-                                key: kd[_id]
+        for (var i = 0; i < links.length; ++i) {
+            if (!(function (link) {
+                    if (link.right) {
+                        if (keyData[link.source.id][link.target.id].length) {
+                            data[link.source.id].next.push({
+                                id:  link.target.id,
+                                key: keyData[link.source.id][link.target.id]
                             });
                         } else {
-                            alert('!');
+                            alert(_('The key from "') + data[link.source.id].title + _('" to "') + data[link.target.id].title + '" is not specified!');
                             event.preventDefault();
                             return false;
                         }
                     }
-                }
+                    if (link.left) {
+                        if (keyData[link.target.id][link.source.id].length) {
+                            data[link.target.id].next.push({
+                                id:  link.source.id,
+                                key: keyData[link.target.id][link.source.id]
+                            });
+                        } else {
+                            alert(_('The key from "') + data[link.target.id].title + _('" to "') + data[link.source.id].title + '" is not specified!');
+                            event.preventDefault();
+                            return false;
+                        }
+                    }
+                    return true;
+                })(links[i])) {
+                return false;
             }
         }
 
-        console.log(data);
-        return false;
+        formData.value = JSON.stringify(data);
+        hideForm.submit();
     }, false);
+
+    for (id in data) {
+        if (data.hasOwnProperty(id)) {
+            nodes.push({
+                id:        id,
+                reflexive: false
+            });
+
+            if (data[id].start) {
+                initData[id] = true;
+            }
+        }
+    }
+
+    // app starts here
+    svg.on('mousedown', mousedown).on('mousemove', mousemove).on('mouseup', mouseup);
+    d3.select(window).on('keydown', keydown).on('keyup', keyup);
+    restart();
+
+    for (id in data) {
+        if (data.hasOwnProperty(id)) {
+            (function (id) {
+                data[id].next.forEach(function (link) {
+                    if (!keyData[id]) {
+                        keyData[id] = {};
+                    }
+
+                    keyData[id][link.id] = link.key || '';
+
+                    var dir = 'right';
+
+                    var newLink = links.filter(function (l) {
+                        if (l.source.id == id && l.target.id == link.id) {
+                            dir = 'right';
+                            return 1;
+                        }
+                        if (l.source.id == link.id && l.target.id == id) {
+                            dir = 'left';
+                            return 1;
+                        }
+                        return 0;
+                    })[0];
+
+                    if (newLink) {
+                        newLink[dir] = true;
+                    } else {
+                        newLink      = {
+                            source: nodeData[id],
+                            target: nodeData[link.id],
+                            left:   false,
+                            right:  false
+                        };
+                        newLink[dir] = true;
+                        links.push(newLink);
+                    }
+                })
+            })(id);
+        }
+    }
+    restart();
+
 })(window, data);

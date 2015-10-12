@@ -5,6 +5,7 @@
 
 var config = require('../../config.json');
 var User   = require('../../models/user');
+var Quiz   = require('../../models/quiz');
 
 module.exports = function (req, res, next) {
 
@@ -12,13 +13,16 @@ module.exports = function (req, res, next) {
         if (err) {
             next(err);
         } else {
-            res.render('admin-status', {
-                title: config.title,
-                user:  req.user,
-                page:  'status',
-                data: {
-                    total: count
-                }
+            Quiz.count(function (err, qcount) {
+                res.render('admin-status', {
+                    title: config.title,
+                    user:  req.user,
+                    page:  'status',
+                    data: {
+                        userCount: count,
+                        quizCount: qcount
+                    }
+                });
             });
         }
     });

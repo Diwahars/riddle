@@ -1,16 +1,40 @@
 var express  = require('express');
 var router   = express.Router();
 var passport = require('passport');
-var User     = require('../models/user');
 
 var config = require('../config');
 
+var Quiz = require('../models/quiz');
+var User = require('../models/user');
+var Record = require('../models/record');
+
 /* GET home page. */
-router.get('/', function (req, res) {
-    res.render('index', {
-        title: config.title,
-        user:  req.user
+router.get('/', function (req, res, next) {
+    Quiz.find({start: true}, 'title content', function (err, quizzes) {
+        if (err) {
+            next(err);
+        } else {
+            res.render('index', {
+                title: config.title,
+                user:  req.user,
+                data:  quizzes
+            });
+        }
     });
+});
+
+router.get('/quiz/:id', function (req, res, next) {
+    Quiz.findById(req.params.id, 'title content', function (err, quiz) {
+        if (err) {
+            next(err);
+        } else {
+            res.render('quiz', {
+                title: config.title,
+                user:  req.user,
+                data:  quiz
+            });
+        }
+    })
 });
 
 router.get('/register', function (req, res) {
@@ -53,6 +77,22 @@ router.post('/login', passport.authenticate('local', {
 router.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
+});
+
+router.post('/key', function (req, res, next) {
+    if (!req.user) {
+        next(new Error('Not authorized, permission denied ;)'));
+    } else {
+        try {
+            var record = new Record({
+                submit: String(req.body.result),
+                uid: req.user._id
+            });
+        } catch (err) {
+            next(err);
+        }
+
+    }
 });
 
 module.exports = router;
