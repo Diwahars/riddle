@@ -11,9 +11,9 @@ var User = new Schema({
         type:    String,
         default: 'user'
     },
-    passed: {
-        type:    [String],
-        default: []
+    gid: {
+        type:    String,
+        default: ''
     }
 });
 

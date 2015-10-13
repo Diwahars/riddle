@@ -18,5 +18,16 @@
 	"Quiz": "谜题",
 	"username": "用户名",
 	"created at": "创建时间",
-	"group": "用户组"
+	"group": "用户组",
+	"Please contact us to join a group!": "Please contact us to join a group!",
+	"Groups": "组队",
+	"groupname": "队伍名",
+	"Please DO NOT modify it after game start!": "Please DO NOT modify it after game start!",
+	"submissions": "submissions",
+	"edit": "edit",
+	"Cancel": "Cancel",
+	"Add": "Add",
+	"Remove Group": "Remove Group",
+	"This operation will remove all group data (including all accepts), are you sure to continue?": "This operation will remove all group data (including all accepts), are you sure to continue?",
+	"Remove": "Remove"
 }

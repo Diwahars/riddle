@@ -14,6 +14,10 @@ var Record = new Schema({
         type:    String,
         default: ''
     },
+    gid:    {
+        type:    String,
+        default: ''
+    },
     submit: {
         type:    String,
         default: ''

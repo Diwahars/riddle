@@ -4,23 +4,50 @@ var passport = require('passport');
 
 var config = require('../config');
 
-var Quiz = require('../models/quiz');
-var User = require('../models/user');
+var Quiz   = require('../models/quiz');
+var User   = require('../models/user');
+var Group  = require('../models/group');
 var Record = require('../models/record');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    Quiz.find({start: true}, 'title content', function (err, quizzes) {
-        if (err) {
-            next(err);
-        } else {
-            res.render('index', {
-                title: config.title,
-                user:  req.user,
-                data:  quizzes
-            });
-        }
-    });
+    if (!req.user || !req.user.gid) {
+        res.render('index', {
+            title:   config.title,
+            user:    req.user,
+            data:    [],
+            success: req.flash('success'),
+            error:   req.flash('error')
+        });
+    } else {
+        Group.findById(req.user.gid, function (err, group) {
+            if (err) {
+                next(err);
+            } else {
+                Quiz.find({
+                    $or: [{
+                        _id: {
+                            $in: group.passed
+                        }
+                    }, {
+                        start: true
+                    }]
+                }, 'title content', function (err, quizzes) {
+                    if (err) {
+                        next(err);
+                    } else {
+                        res.render('index', {
+                            title:   config.title,
+                            user:    req.user,
+                            data:    quizzes,
+                            success: req.flash('success'),
+                            error:   req.flash('error')
+                        });
+                    }
+                });
+            }
+        });
+    }
 });
 
 router.get('/quiz/:id', function (req, res, next) {
@@ -81,17 +108,74 @@ router.get('/logout', function (req, res) {
 
 router.post('/key', function (req, res, next) {
     if (!req.user) {
-        next(new Error('Not authorized, permission denied ;)'));
+        return next(new Error('Not authorized, permission denied ;)'));
     } else {
+        if (!req.body.qid || !req.body.key) {
+            return next(new Error(__('Quiz id error or empty key!')));
+        }
+        if (!req.user.gid) {
+            return next(new Error(__('Please join a group ;)')));
+        }
         try {
             var record = new Record({
                 submit: String(req.body.result),
-                uid: req.user._id
+                uid:    req.user._id,
+                gid:    req.user.gid
             });
         } catch (err) {
-            next(err);
+            return next(err);
         }
-
+        Quiz.findById(req.body.qid, function (err, quiz) {
+            if (err) {
+                return next(err);
+            } else {
+                Group.findById(req.user.gid, function (err, group) {
+                    if (err) {
+                        return next(err);
+                    } else {
+                        if (group.passed.indexOf(req.body.qid) !== -1 || quiz.start) {
+                            var nextId = '';
+                            quiz.next.forEach(function (sibling) {
+                                if (sibling.key.toString() === String(req.body.key || '')) {
+                                    nextId = sibling.id;
+                                }
+                            });
+                            if (nextId) {
+                                // passed
+                                if (group.passed.indexOf(nextId) !== -1) {
+                                    record.result = 'Accepted (again)';
+                                    record.save(function () {
+                                        req.flash('success', __('Accepted, you\' already passed this level'));
+                                        res.redirect('/');
+                                    });
+                                } else {
+                                    record.result = 'Accepted';
+                                    record.save(function () {
+                                        group.passed.push(nextId);
+                                        group.save(function () {
+                                            req.flash('success', __('Accepted'));
+                                            res.redirect('/');
+                                        });
+                                    });
+                                }
+                            } else {
+                                record.result = 'Wrong Answer';
+                                record.save(function () {
+                                    req.flash('error', __('Wrong Answer'));
+                                    res.redirect('/');
+                                });
+                            }
+                        } else {
+                            record.result = 'Permission Denied';
+                            record.save(function () {
+                                req.flash('error', __('You do not have permission to access this quiz'));
+                                res.redirect('/');
+                            });
+                        }
+                    }
+                });
+            }
+        });
     }
 });
 

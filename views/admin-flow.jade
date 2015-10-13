@@ -8,6 +8,7 @@ block view
   if message && message.length
     p.success #{message}
   p= __("Use ctrl+mouse to move an entry, click to select entries or edges, select & backspace to delete a edge.")
+  p= __("Please DO NOT modify it after game start!")
   div.row.flow
   div.row.data-table
   form#hide-form(action="/admin/flow/save", method="POST")

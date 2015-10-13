@@ -1,0 +1,92 @@
+//
+   Created by dsds on 10/13/15.
+extends admin
+
+block view
+  if message && message.length
+    p.success #{message}
+  div.row
+    a#save-btn.button.button-primary.float-right(href="/admin/groups")= __("Save")
+    a#cancel-btn.button.float-right(href="/admin/groups")= __("Cancel")
+    h1#group-name.editable= data ? data.group.name : ''
+  if data
+    div.row
+      table.u-full-width
+        thead
+          tr
+            th= __("username")
+            th= __("submissions")
+            th= __("edit")
+        tbody
+          each userdata, index in data.users
+            tr
+              td #{userdata.username}
+              td
+              td
+                a.remove-user(href="#", onclick="removeUser('" + userdata.username + "', '" + userdata._id + "')")= __("Remove")
+          form(action="/admin/groups/add", method="POST")
+            tr
+              td
+                input.key(type="text", name="username", placeholder=__("username"), required)
+              td
+                input.key(type="text", name="gid", style="display: none", value=data.group._id)
+              td
+                input.key.button.button-primary(type="submit", value=__("Add"))
+    div.row
+      form#remove-form(action="/admin/groups/remove", method="POST")
+        input#remove-button.button.button-danger(type="button", value=__("Remove Group"))
+  if !data
+    form#hide-form(action="/admin/groups/new", method="POST")
+      input#form-name(name="groupname", type="text")
+  else
+    form#hide-form(action="/admin/groups/update", method="POST")
+      input#form-name(name="groupname", type="text")
+      input(type="text", name="gid", value=data.group._id)
+  if data
+    form#hide-form-2(action="/admin/groups/removeuser", method="POST", style="display: none")
+      input#form-uid(name="uid", type="text")
+      input(type="text", name="gid", value=data.group._id)
+
+block footer
+  script(type="text/javascript", src="/javascripts/medium-editor.min.js")
+  script.
+    var modified = false;
+    function $$(sel) {
+      return document.getElementById(sel);
+    }
+    new MediumEditor('#group-name', {
+      toolbar:       false,
+      placeholder:   {
+        text: 'New Group'
+      },
+      paste:         {
+        forcePlainText: true
+      },
+      imageDragging: false
+    });
+    var form = $$('hide-form');
+    var nameForm = $$('form-name');
+    $$("save-btn").addEventListener('click', function (event) {
+      event.preventDefault();
+      var groupname = $$("group-name").innerText;
+      if (!groupname.length) {
+        alert('Empty group name!');
+        return false;
+      }
+      nameForm.value = groupname;
+      form.submit();
+    });
+    $$('remove-button').addEventListener('click', function (event) {
+      event.preventDefault();
+      if (confirm('This operation will remove all group data (including all accepts), are you sure to continue?')) {
+        $$('remove-form').submit();
+      }
+    });
+    var uidForm = $$('form-uid');
+    var removeUserForm = $$('hide-form-2');
+    function removeUser (username, uid) {
+      if (confirm('Remove user ' + username + '?')) {
+        uidForm.value = uid;
+        //removeUserForm.submit();
+      }
+    }

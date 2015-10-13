@@ -12,6 +12,10 @@ block content
           a.button(href="/admin")= __("Admin")
         a.button(href="/logout") #{__("Logout")} (#{user.username})
   div.container
+    if success && success.length
+      p.success #{success}
+    if error && error.length
+      p.success #{error}
     div.row
       if !user
         p #{__("Welcome to")} #{title}
@@ -20,7 +24,10 @@ block content
         a.button.button-primary(href="/login")= __("Login")
       else
         p Hello, #{user.username}
-        ul
-          each quiz in data
-            li
-              a(href="/quiz/" + quiz._id)= quiz.title
+        if user.gid
+          ul
+            each quiz in data
+              li
+                a(href="/quiz/" + quiz._id)= quiz.title
+        else
+          p= __("Please contact us to join a group!")
