@@ -6,9 +6,9 @@ block content
       a(href="/").title= title
     nav
       if !user
-        a.button(href="/login") Login
+        a.button(href="/login")= __("Login")
       else
-        a.button(href="/logout") Logout (#{user.username})
+        a.button(href="/logout") #{__("Logout")} (#{user.username})
   div.container
     div.row
-      h1= status + ' ' + message
+      h1= __('ERROR! ') + status + ' ' + message

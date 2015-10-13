@@ -23,6 +23,7 @@ router.post('/quizzes/new', quizzes.postNew);
 router.post('/groups/new', groups.postNew);
 router.post('/groups/update', groups.update);
 router.post('/groups/add', groups.addUser);
+router.post('/groups/remove', groups.remove);
 router.post('/groups/removeuser', groups.removeUser);
 router.post('/quizzes/delete/:id', quizzes.delete);
 router.post('/flow/save', flow.save);

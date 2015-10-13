@@ -194,6 +194,22 @@ text.id {
 input.key {
   margin-bottom: 0;
 }
+/* index */
+ul.quizzes-list {
+  list-style: none;
+  padding: 0;
+  font-size: 2rem;
+}
+.quizzes-list li a {
+  text-decoration: none;
+  display: block;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+.quizzes-list li a:hover {
+  color: #000;
+  background-color: #efefef;
+}
 @media (min-width: 550px) {
   nav {
     margin: 0.9rem 0;

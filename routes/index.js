@@ -1,6 +1,7 @@
 var express  = require('express');
 var router   = express.Router();
 var passport = require('passport');
+var i18n     = require('i18n');
 
 var config = require('../config');
 
@@ -8,6 +9,34 @@ var Quiz   = require('../models/quiz');
 var User   = require('../models/user');
 var Group  = require('../models/group');
 var Record = require('../models/record');
+
+global.userNameCache = {};
+global.quizNameCache = {};
+global.groupNameCache = {};
+
+User.find(function (err, users) {
+    if (!err) {
+        users.forEach(function (user) {
+            userNameCache[user._id] = user.username;
+        });
+    }
+});
+
+Quiz.find(function (err, quizzes) {
+    if (!err) {
+        quizzes.forEach(function (quiz) {
+            quizNameCache[quiz._id] = quiz.title;
+        });
+    }
+});
+
+Group.find(function (err, groups) {
+    if (!err) {
+        groups.forEach(function (group) {
+            groupNameCache[group._id] = group.name;
+        });
+    }
+});
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -27,7 +56,7 @@ router.get('/', function (req, res, next) {
                 Quiz.find({
                     $or: [{
                         _id: {
-                            $in: group.passed
+                            $in: group ? group.passed : []
                         }
                     }, {
                         start: true
@@ -51,17 +80,30 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/quiz/:id', function (req, res, next) {
-    Quiz.findById(req.params.id, 'title content', function (err, quiz) {
-        if (err) {
-            next(err);
-        } else {
-            res.render('quiz', {
-                title: config.title,
-                user:  req.user,
-                data:  quiz
+    if (!req.user || !req.user.gid) {
+        req.flash('error', i18n.__('Please join a group first'));
+        res.redirect('/');
+    } else {
+        Group.findById(req.user.gid, function (err, group) {
+            if (err) {
+                return next(err);
+            }
+            Quiz.findById(req.params.id, 'title content start', function (err, quiz) {
+                if (err) {
+                    return next(new Error(':)'));
+                }
+                if (quiz.start || group.passed.indexOf(quiz._id.toString()) !== -1) {
+                    res.render('quiz', {
+                        title: config.title,
+                        user:  req.user,
+                        data:  quiz
+                    });
+                } else {
+                    next(new Error('Unknown'));
+                }
             });
-        }
-    })
+        });
+    }
 });
 
 router.get('/register', function (req, res) {
@@ -72,7 +114,7 @@ router.get('/register', function (req, res) {
 });
 
 router.post('/register', function (req, res, next) {
-    User.register(new User({username: req.body.username}), req.body.password, function (err) {
+    User.register(new User({username: req.body.username}), req.body.password, function (err, user) {
         if (err) {
             res.render('register', {
                 title:   config.title,
@@ -80,7 +122,9 @@ router.post('/register', function (req, res, next) {
                 message: err.message
             });
         } else {
+            req.flash('success', 'Successfully registered.');
             res.redirect('/');
+            userNameCache[user._id] = user.username;
         }
     });
 });
@@ -108,17 +152,17 @@ router.get('/logout', function (req, res) {
 
 router.post('/key', function (req, res, next) {
     if (!req.user) {
-        return next(new Error('Not authorized, permission denied ;)'));
+        return next(new Error(i18n.__('Not authorized, permission denied ;)')));
     } else {
         if (!req.body.qid || !req.body.key) {
-            return next(new Error(__('Quiz id error or empty key!')));
+            return next(new Error(i18n.__('Quiz id error or empty key!')));
         }
         if (!req.user.gid) {
-            return next(new Error(__('Please join a group ;)')));
+            return next(new Error(i18n.__('Please join a group ;)')));
         }
         try {
             var record = new Record({
-                submit: String(req.body.result),
+                submit: String(req.body.key),
                 uid:    req.user._id,
                 gid:    req.user.gid
             });
@@ -145,7 +189,7 @@ router.post('/key', function (req, res, next) {
                                 if (group.passed.indexOf(nextId) !== -1) {
                                     record.result = 'Accepted (again)';
                                     record.save(function () {
-                                        req.flash('success', __('Accepted, you\' already passed this level'));
+                                        req.flash('success', i18n.__('Accepted, you\' already passed this level'));
                                         res.redirect('/');
                                     });
                                 } else {
@@ -153,7 +197,7 @@ router.post('/key', function (req, res, next) {
                                     record.save(function () {
                                         group.passed.push(nextId);
                                         group.save(function () {
-                                            req.flash('success', __('Accepted'));
+                                            req.flash('success', i18n.__('Accepted'));
                                             res.redirect('/');
                                         });
                                     });
@@ -161,14 +205,14 @@ router.post('/key', function (req, res, next) {
                             } else {
                                 record.result = 'Wrong Answer';
                                 record.save(function () {
-                                    req.flash('error', __('Wrong Answer'));
+                                    req.flash('error', i18n.__('Wrong Answer'));
                                     res.redirect('/');
                                 });
                             }
                         } else {
                             record.result = 'Permission Denied';
                             record.save(function () {
-                                req.flash('error', __('You do not have permission to access this quiz'));
+                                req.flash('error', i18n.__('You do not have permission to access this quiz'));
                                 res.redirect('/');
                             });
                         }

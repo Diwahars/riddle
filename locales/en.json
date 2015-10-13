@@ -1,5 +1,22 @@
 {
 	"Welcome to": "Welcome to",
 	"Login": "Login",
-	"Register": "Register"
+	"Register": "Register",
+	"Wrong Answer": "Wrong Answer",
+	"Please join a group first": "Please join a group first",
+	"Accepted": "Accepted",
+	"Accepted, you' already passed this level": "Accepted, you' already passed this level",
+	"Logout": "Logout",
+	"Status": "Status",
+	"Users": "Users",
+	"Groups": "Groups",
+	"Quizzes": "Quizzes",
+	"Flow": "Flow",
+	"Site Settings": "Site Settings",
+	"time": "time",
+	"user id": "user id",
+	"group id": "group id",
+	"submit": "submit",
+	"result": "result",
+	"Admin": "Admin"
 }

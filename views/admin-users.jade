@@ -16,6 +16,8 @@ block view
           a(href="?s=_id")= __("created at")
         th
           a(href="?s=group")= __("group")
+        th
+          a(href="?s=gid")= __("group")
     tbody
       each userdata, index in data.users
         tr
@@ -23,6 +25,7 @@ block view
           td #{userdata.username}
           td #{ObjectId(userdata._id).getTimestamp().toLocaleString()}
           td #{userdata.group}
+          td #{data.groupName[userdata.gid] || ''}
   - var pageCount = Math.ceil(data.total / data.usersPerPage);
   ul.pagination
     - for (var x = 0; x < pageCount; ++x)

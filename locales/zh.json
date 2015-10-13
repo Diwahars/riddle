@@ -1,6 +1,6 @@
 {
 	"Welcome to": "欢迎访问",
-	"Login": "登陆",
+	"Login": "登录",
 	"Register": "注册",
 	"Username": "用户名",
 	"Password": "密码",
@@ -29,5 +29,16 @@
 	"Add": "Add",
 	"Remove Group": "Remove Group",
 	"This operation will remove all group data (including all accepts), are you sure to continue?": "This operation will remove all group data (including all accepts), are you sure to continue?",
-	"Remove": "Remove"
+	"Remove": "Remove",
+	"Back": "Back",
+	"Submit": "Submit",
+	"ERROR! ": "ERROR! ",
+	"passed levels": "passed levels",
+	"time": "time",
+	"user id": "user id",
+	"group id": "group id",
+	"submit": "submit",
+	"result": "result",
+	"user name": "user name",
+	"group name": "group name"
 }

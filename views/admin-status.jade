@@ -4,5 +4,33 @@ extends admin
 
 block view
   h1 Status
-  p #{data.userCount} user(s) in total.
-  p #{data.quizCount} quiz(s) in total.
+  p
+    span #{data.userCount} user(s),
+    span  #{data.quizCount} quiz(s),
+    span  #{data.groupCount} group(s).
+
+    table.u-full-width
+      thead
+        tr
+          th= __("time")
+          th= __("user name")
+          th= __("group name")
+          th= __("submit")
+          th= __("result")
+      tbody
+        each record in data.records
+          tr
+            td #{ObjectId(record._id).getTimestamp().toLocaleString()}
+            td #{data.userName[record.uid] ? data.userName[record.uid] : record.uid}
+            td
+              a(href="/admin/groups/" + record.gid) #{data.groupName[record.gid] ? data.groupName[record.gid] : record.gid}
+            td #{record.submit}
+            td #{record.result}
+  - var pageCount = Math.ceil(data.total / data.usersPerPage);
+  ul.pagination
+    - for (var x = 0; x < pageCount; ++x)
+      li
+        if x != data.page
+          a(href="?p=" + x)= x + 1
+        else
+          a.current= x + 1

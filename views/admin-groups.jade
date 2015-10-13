@@ -4,8 +4,8 @@ extends admin
 block view
   a.button.button-primary.float-right(href="/admin/groups/new") New Group
   h1 Groups
-  if message && message.length
-    p.success #{message}
+  if success && success.length
+    p.success #{success}
   p #{data.length} group(s) in total.
   table.u-full-width
     thead
@@ -13,6 +13,7 @@ block view
         th №
         th= __("groupname")
         th= __("created at")
+        th= __("passed levels")
     tbody
       each groupdata, index in data
         tr
@@ -20,3 +21,6 @@ block view
           td
             a(href="/admin/groups/" + groupdata._id) #{groupdata.name}
           td #{ObjectId(groupdata._id).getTimestamp().toLocaleString()}
+          td
+            each id in groupdata.passed
+              div= quizName[id] ? quizName[id] : id

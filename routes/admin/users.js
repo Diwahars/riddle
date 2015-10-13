@@ -7,11 +7,12 @@ var mongoose = require('mongoose');
 
 var config = require('../../config.json');
 var User   = require('../../models/user');
+var Group  = require('../../models/group');
 
 module.exports.pages = function (req, res, next) {
     var offset     = req.query.p || 0;
     var sortMethod = 'group';
-    if (['username', 'group', '_id'].indexOf(req.query.s) >= 0) {
+    if (['username', 'group', '_id', 'gid'].indexOf(req.query.s) >= 0) {
         sortMethod = req.query.s;
     }
     User.count(function (err, count) {
@@ -32,7 +33,8 @@ module.exports.pages = function (req, res, next) {
                             users:        users,
                             usersPerPage: config['items-per-page'],
                             total:        count,
-                            sort:         sortMethod
+                            sort:         sortMethod,
+                            groupName:    groupNameCache
                         }
                     });
                 }

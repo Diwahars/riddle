@@ -93,6 +93,7 @@ module.exports.postNew = function (req, res, next) {
                 } else {
                     req.flash('success', 'Quiz created.');
                     res.redirect('/admin/quizzes/');
+                    quizNameCache[quiz._id] = quiz.title;
                 }
             });
         }

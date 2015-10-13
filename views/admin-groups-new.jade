@@ -3,8 +3,10 @@
 extends admin
 
 block view
-  if message && message.length
-    p.success #{message}
+  if success && success.length
+    p.success #{success}
+  if error && error.length
+    p.error #{error}
   div.row
     a#save-btn.button.button-primary.float-right(href="/admin/groups")= __("Save")
     a#cancel-btn.button.float-right(href="/admin/groups")= __("Cancel")
@@ -34,6 +36,7 @@ block view
                 input.key.button.button-primary(type="submit", value=__("Add"))
     div.row
       form#remove-form(action="/admin/groups/remove", method="POST")
+        input(type="text", name="gid", value=data.group._id, style="display: none")
         input#remove-button.button.button-danger(type="button", value=__("Remove Group"))
   if !data
     form#hide-form(action="/admin/groups/new", method="POST")
@@ -87,6 +90,6 @@ block footer
     function removeUser (username, uid) {
       if (confirm('Remove user ' + username + '?')) {
         uidForm.value = uid;
-        //removeUserForm.submit();
+        removeUserForm.submit();
       }
     }
