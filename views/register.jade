@@ -8,23 +8,35 @@ block content
       a(href="/").title= title
     nav
       if user
-        a.button(href="/logout") Logout (#{user.username})
+        a.button(href="/logout") #{__("Logout")} (#{user.username})
   div.container
     div.row
       div.one-half.column
-        h1 Register
+        h1= __("Register")
         if message && message.length
           p.error #{message}
-        form(action="/register",method="post")
+        form(action="/register", method="post")
           div
-            label Username
-            input(type="text",name="username").u-full-width
+            label= __("Username")
+            input(type="text", name="username", required).u-full-width
           div
-            label Password
-            input(type="password",name="password").u-full-width
+            label= __("Password")
+            input(type="password", name="password", required).u-full-width
           div
-            input(type="submit",value="Register").button.button-primary
+            label= __("Name")
+            input(type="text", name="name", required).u-full-width
           div
-            | ...or
+            label= __("UID")
+            input(type="text", name="uid", required).u-full-width
+          div
+            label= __("School")
+            input(type="text", name="school", required).u-full-width
+          div
+            label= __("Contact")
+            input(type="text", name="contact", required).u-full-width
+          div
+            input(type="submit", value=__("Register")).button.button-primary
+          div
+            = __("...or")
             =" "
-            a(href="/login") login
+            a(href="/login")= __("login")

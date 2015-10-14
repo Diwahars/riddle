@@ -15,15 +15,15 @@ block content
         h1= __("Login")
         if message && message.length
           p.error #{message}
-        form(action="/login",method="post")
+        form(action="/login", method="post")
           div
             label= __("Username")
-            input(type="text",name="username").u-full-width
+            input(type="text", name="username").u-full-width
           div
             label= __("Password")
-            input(type="password",name="password").u-full-width
+            input(type="password", name="password").u-full-width
           div
-            input(type="submit",value="Log In").button.button-primary
+            input(type="submit", value=__("Log In")).button.button-primary
           div
             =__("...or")
             =" "

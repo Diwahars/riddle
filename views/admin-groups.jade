@@ -14,6 +14,7 @@ block view
         th= __("groupname")
         th= __("created at")
         th= __("passed levels")
+        th= __("lock")
     tbody
       each groupdata, index in data
         tr
@@ -24,3 +25,14 @@ block view
           td
             each id in groupdata.passed
               div= quizName[id] ? quizName[id] : id
+          td
+            if groupdata.lock > new Date()
+              = groupdata.lock.toLocaleString()
+              br
+              form(style="margin: 0", action="/admin/groups/unlock", method="POST")
+                input.key(type="submit", value="Unlock")
+                input(type="text", name="gid", value=groupdata._id, style="display: none")
+            else
+              form(style="margin: 0", action="/admin/groups/lock", method="POST")
+                input.key(type="submit", value="Lock 1 hour")
+                input(type="text", name="gid", value=groupdata._id, style="display: none")

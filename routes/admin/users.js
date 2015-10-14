@@ -12,7 +12,7 @@ var Group  = require('../../models/group');
 module.exports.pages = function (req, res, next) {
     var offset     = req.query.p || 0;
     var sortMethod = 'group';
-    if (['username', 'group', '_id', 'gid'].indexOf(req.query.s) >= 0) {
+    if (['username', 'group', '_id', 'gid', 'name', 'uid', 'school'].indexOf(req.query.s) >= 0) {
         sortMethod = req.query.s;
     }
     User.count(function (err, count) {

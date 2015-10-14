@@ -8,24 +8,32 @@ block view
   table.u-full-width
     thead
       tr
-        th
-          a(href="?s=_id") №
-        th
+        th(style="white-space: nowrap")
           a(href="?s=username")= __("username")
-        th
+        th(style="white-space: nowrap")
           a(href="?s=_id")= __("created at")
-        th
+        th(style="white-space: nowrap")
           a(href="?s=group")= __("group")
-        th
+        th(style="white-space: nowrap")
           a(href="?s=gid")= __("group")
+        th
+          a(href="?s=name")= __("Name")
+        th
+          a(href="?s=uid")= __("UID")
+        th
+          a(href="?s=school")= __("School")
+        th= __("Contact")
     tbody
-      each userdata, index in data.users
+      each userdata in data.users
         tr
-          td #{index + data.page * data.usersPerPage + 1}
           td #{userdata.username}
-          td #{ObjectId(userdata._id).getTimestamp().toLocaleString()}
-          td #{userdata.group}
-          td #{data.groupName[userdata.gid] || ''}
+          td(style="white-space: nowrap") #{ObjectId(userdata._id).getTimestamp().toLocaleString()}
+          td(style="white-space: nowrap") #{userdata.group}
+          td(style="white-space: nowrap") #{data.groupName[userdata.gid] || ''}
+          td(style="word-break: break-word") #{userdata.name || ''}
+          td(style="word-break: break-word") #{userdata.uid || ''}
+          td(style="word-break: break-word") #{userdata.school || ''}
+          td(style="word-break: break-word") #{userdata.contact || ''}
   - var pageCount = Math.ceil(data.total / data.usersPerPage);
   ul.pagination
     - for (var x = 0; x < pageCount; ++x)

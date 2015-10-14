@@ -18,5 +18,6 @@
 	"group id": "group id",
 	"submit": "submit",
 	"result": "result",
-	"Admin": "Admin"
+	"Admin": "Admin",
+	"Sorry your group has been locked.": "Sorry your group has been locked."
 }

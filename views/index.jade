@@ -23,12 +23,15 @@ block content
         span= " "
         a.button.button-primary(href="/login")= __("Login")
       else
-        p Hello, #{user.username}
-        h3 Quizzes:
-        if user.gid
-          ul.quizzes-list
-            each quiz in data
-              li
-                a(href="/quiz/" + quiz._id)= quiz.title
+        p #{__("Hello")}, #{user.username}. #{__("Your group name is")} #{group.name}.
+        if group.lock > new Date()
+          p= __("Your group has been locked until ") + group.lock.toLocaleString() + "."
         else
-          p= __("Please contact us to join a group!")
+          h3= __("Quizzes:")
+          if user.gid
+            ul.quizzes-list
+              each quiz in data
+                li
+                  a(href="/quiz/" + quiz._id)= quiz.title
+          else
+            p= __("Please contact us to join a group!")

@@ -14,7 +14,11 @@ var User = new Schema({
     gid: {
         type:    String,
         default: ''
-    }
+    },
+    name:     String,
+    uid:      String,
+    school:   String,
+    contact:  String
 });
 
 User.plugin(passportLocalMongoose);

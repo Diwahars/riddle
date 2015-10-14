@@ -10,8 +10,8 @@ var User   = require('../models/user');
 var Group  = require('../models/group');
 var Record = require('../models/record');
 
-global.userNameCache = {};
-global.quizNameCache = {};
+global.userNameCache  = {};
+global.quizNameCache  = {};
 global.groupNameCache = {};
 
 User.find(function (err, users) {
@@ -68,6 +68,7 @@ router.get('/', function (req, res, next) {
                         res.render('index', {
                             title:   config.title,
                             user:    req.user,
+                            group:   group,
                             data:    quizzes,
                             success: req.flash('success'),
                             error:   req.flash('error')
@@ -114,7 +115,13 @@ router.get('/register', function (req, res) {
 });
 
 router.post('/register', function (req, res, next) {
-    User.register(new User({username: req.body.username}), req.body.password, function (err, user) {
+    User.register(new User({
+        username: req.body.username,
+        name:     req.body.name,
+        uid:      req.body.uid,
+        school:   req.body.school,
+        contact:  req.body.contact
+    }), req.body.password, function (err, user) {
         if (err) {
             res.render('register', {
                 title:   config.title,
@@ -177,6 +184,13 @@ router.post('/key', function (req, res, next) {
                     if (err) {
                         return next(err);
                     } else {
+                        // Is this group locked?
+                        if (group.lock > new Date()) {
+                            req.flash('error', i18n.__('Sorry your group has been locked.'));
+                            res.redirect('/');
+                            return;
+                        }
+                        // Validate
                         if (group.passed.indexOf(req.body.qid) !== -1 || quiz.start) {
                             var nextId = '';
                             quiz.next.forEach(function (sibling) {

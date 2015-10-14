@@ -159,10 +159,10 @@ module.exports.addUser = function (req, res, next) {
 module.exports.removeUser = function (req, res, next) {
     if (!req.body.gid) {
         req.flash('error', 'Wrong group.');
-        res.redirect('/');
+        res.redirect('/admin/groups');
     } else if (!req.body.uid) {
         req.flash('error', 'Wrong user id.');
-        res.redirect('/');
+        res.redirect('/admin/groups');
     } else {
         Group.findById(req.body.gid, function (err, group) {
             if (err) {
@@ -178,6 +178,41 @@ module.exports.removeUser = function (req, res, next) {
                         res.redirect('/admin/groups/' + group._id);
                     }
                 });
+            }
+        });
+    }
+};
+
+module.exports.lock = function (req, res, next) {
+    if (!req.body.gid) {
+        req.flash('error', 'Wrong group.');
+        res.redirect('/admin/groups');
+    } else {
+        var date = new Date();
+        date.setHours(date.getHours() + 1);
+        Group.findByIdAndUpdate(req.body.gid, {lock: date}, function (err) {
+            if (err) {
+                next(err);
+            } else {
+                req.flash('success', 'Group locked');
+                res.redirect('/admin/groups/');
+            }
+        });
+    }
+};
+
+module.exports.unlock = function (req, res, next) {
+    if (!req.body.gid) {
+        req.flash('error', 'Wrong group.');
+        res.redirect('/admin/groups');
+    } else {
+        var date = new Date(0);
+        Group.findByIdAndUpdate(req.body.gid, {lock: date}, function (err) {
+            if (err) {
+                next(err);
+            } else {
+                req.flash('success', 'Group unlocked');
+                res.redirect('/admin/groups/');
             }
         });
     }
