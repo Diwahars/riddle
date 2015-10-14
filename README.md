@@ -1,5 +1,8 @@
 # riddle
 
+![](https://img.shields.io/npm/v/riddles.svg?style=flat-square)
+![](https://img.shields.io/npm/l/riddles.svg?style=flat-square)
+
 v0.1.0 :construction:
 
 A application for series of puzzle challenge, like [Python Challenge](http://www.pythonchallenge.com/)
@@ -7,8 +10,7 @@ A application for series of puzzle challenge, like [Python Challenge](http://www
 Users & groups & problems management, quizzes orders, real-time submissions, designed to simple and responsive.
 
 ## Install
-- `git clone git@github.com:quietshu/riddle.git`
-- `npm install`
+- `npm install riddles`
 
 Modify your settings in `config.json`, change the default HTTP port in `bin/www` line 15.
 

@@ -1,10 +1,24 @@
 {
-  "name": "riddle",
+  "name": "riddles",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "start": "node ./bin/www"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quietshu/riddle.git"
+  },
+  "keywords": [
+    "riddle",
+    "challenge",
+    "puzzle"
+  ],
+  "author": "Shu Ding",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quietshu/riddle/issues"
+  },
+  "homepage": "https://github.com/quietshu/riddle",
   "dependencies": {
     "body-parser": "~1.13.2",
     "compression": "^1.6.0",
