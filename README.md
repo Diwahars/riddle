@@ -1,11 +1,9 @@
 # riddle
 
+A framework for building series of puzzle challenge, like Python Challenge.
+
 ![](https://img.shields.io/npm/v/riddles.svg?style=flat-square)
 ![](https://img.shields.io/npm/l/riddles.svg?style=flat-square)
-
-v0.1.0 :construction:
-
-A application for series of puzzle challenge, like [Python Challenge](http://www.pythonchallenge.com/)
 
 Users & groups & problems management, quizzes orders, real-time submissions, designed to simple and responsive.
 

@@ -17,7 +17,7 @@ block content
     if error && error.length
       p.error #{error}
     div.row
-      if !user
+      if !user || !user.gid
         p #{__("Welcome to")} #{title}
         a.button.button-primary(href="/register")= __("Register")
         span= " "
