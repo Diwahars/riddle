@@ -21,6 +21,8 @@ var admin  = require('./routes/admin');
 
 var app = express();
 
+app.locals.path = config.path;
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

@@ -5,17 +5,17 @@ extends layout
 block content
   div.header
     h3
-      a(href="/").title= title
+      a(href=path + "/").title= title
     nav
       if user
-        a.button(href="/logout") Logout (#{user.username})
+        a.button(href=path + "/logout") Logout (#{user.username})
   div.container
     div.row
       div.one-half.column
         h1= __("Login")
         if message && message.length
           p.error #{message}
-        form(action="/login", method="post")
+        form(action=path + "/login", method="post")
           div
             label= __("Username")
             input(type="text", name="username").u-full-width
@@ -27,4 +27,4 @@ block content
           div
             =__("...or")
             =" "
-            a(href="/register")= __("register")
+            a(href=path + "/register")= __("register")

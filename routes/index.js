@@ -85,7 +85,7 @@ router.get('/', function (req, res, next) {
 router.get('/quiz/:id', function (req, res, next) {
     if (!req.user || !req.user.gid) {
         req.flash('error', i18n.__('Please join a group first'));
-        res.redirect('/');
+        res.redirect(config.path + '/');
     } else {
         Group.findById(req.user.gid, function (err, group) {
             if (err) {
@@ -132,7 +132,7 @@ router.post('/register', function (req, res, next) {
             });
         } else {
             req.flash('success', 'Successfully registered.');
-            res.redirect('/');
+            res.redirect(config.path + '/');
             userNameCache[user._id] = user.username;
         }
     });
@@ -151,12 +151,12 @@ router.post('/login', passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash:    'Invalid username or password.'
 }), function (req, res) {
-    res.redirect('/');
+    res.redirect(config.path + '/');
 });
 
 router.get('/logout', function (req, res) {
     req.logout();
-    res.redirect('/');
+    res.redirect(config.path + '/');
 });
 
 router.post('/key', function (req, res, next) {
@@ -189,7 +189,7 @@ router.post('/key', function (req, res, next) {
                         // Is this group locked?
                         if (group.lock > new Date()) {
                             req.flash('error', i18n.__('Sorry your group has been locked.'));
-                            res.redirect('/');
+                            res.redirect(config.path + '/');
                             return;
                         }
                         // Validate
@@ -206,7 +206,7 @@ router.post('/key', function (req, res, next) {
                                     record.result = 'Accepted (again)';
                                     record.save(function () {
                                         req.flash('success', i18n.__('Accepted, you\' already passed this level'));
-                                        res.redirect('/');
+                                        res.redirect(config.path + '/');
                                     });
                                 } else {
                                     record.result = 'Accepted';
@@ -214,7 +214,7 @@ router.post('/key', function (req, res, next) {
                                         group.passed.push(nextId);
                                         group.save(function () {
                                             req.flash('success', i18n.__('Accepted'));
-                                            res.redirect('/');
+                                            res.redirect(config.path + '/');
                                         });
                                     });
                                 }
@@ -233,14 +233,14 @@ router.post('/key', function (req, res, next) {
                                         record.result = 'Cheat, lock ' + group.lock_times * group.lock_times + 'hr(s)';
                                         record.save(function () {
                                             req.flash('error', i18n.__('You cheat!'));
-                                            res.redirect('/');
+                                            res.redirect(config.path + '/');
                                         });
                                     });
                                 } else {
                                     record.result = 'Wrong Answer';
                                     record.save(function () {
                                         req.flash('error', i18n.__('Wrong Answer'));
-                                        res.redirect('/');
+                                        res.redirect(config.path + '/');
                                     });
                                 }
                             }
@@ -248,7 +248,7 @@ router.post('/key', function (req, res, next) {
                             record.result = 'Permission Denied';
                             record.save(function () {
                                 req.flash('error', i18n.__('You do not have permission to access this quiz'));
-                                res.redirect('/');
+                                res.redirect(config.path + '/');
                             });
                         }
                     }

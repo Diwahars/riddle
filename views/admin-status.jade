@@ -23,7 +23,7 @@ block view
             td #{ObjectId(record._id).getTimestamp().toLocaleString()}
             td #{data.userName[record.uid] ? data.userName[record.uid] : record.uid}
             td
-              a(href="/admin/groups/" + record.gid) #{data.groupName[record.gid] ? data.groupName[record.gid] : record.gid}
+              a(href=path + "/admin/groups/" + record.gid) #{data.groupName[record.gid] ? data.groupName[record.gid] : record.gid}
             td #{record.submit}
             td #{record.result}
   - var pageCount = Math.ceil(data.total / data.usersPerPage);

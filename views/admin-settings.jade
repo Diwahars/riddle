@@ -3,7 +3,7 @@
 extends admin
 
 block view
-  form(action="/admin/settings", method="POST")
+  form(action=path + "/admin/settings", method="POST")
     input.button.button-primary.float-right(type="submit", value=__("Save"))
     h1= __("Settings")
     if message && message.length

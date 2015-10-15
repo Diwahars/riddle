@@ -2,7 +2,7 @@
    Created by dsds on 10/13/15.
 extends admin
 block view
-  a.button.button-primary.float-right(href="/admin/groups/new") New Group
+  a.button.button-primary.float-right(href=path + "/admin/groups/new") New Group
   h1 Groups
   if success && success.length
     p.success #{success}
@@ -20,7 +20,7 @@ block view
         tr
           td #{index + 1}
           td
-            a(href="/admin/groups/" + groupdata._id) #{groupdata.name}
+            a(href=path + "/admin/groups/" + groupdata._id) #{groupdata.name}
           td #{ObjectId(groupdata._id).getTimestamp().toLocaleString()}
           td
             each id in groupdata.passed
@@ -29,10 +29,10 @@ block view
             if groupdata.lock > new Date()
               = groupdata.lock.toLocaleString()
               br
-              form(style="margin: 0", action="/admin/groups/unlock", method="POST")
+              form(style="margin: 0", action=path + "/admin/groups/unlock", method="POST")
                 input.key(type="submit", value="Unlock")
                 input(type="text", name="gid", value=groupdata._id, style="display: none")
             else
-              form(style="margin: 0", action="/admin/groups/lock", method="POST")
+              form(style="margin: 0", action=path + "/admin/groups/lock", method="POST")
                 input.key(type="submit", value="Lock 1 hour")
                 input(type="text", name="gid", value=groupdata._id, style="display: none")

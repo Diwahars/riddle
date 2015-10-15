@@ -6,18 +6,18 @@ block content
   div.header
     div.row
       h3
-        a(href="/").title= title
+        a(href=path + "/").title= title
         |  |
         strong  admin
       nav
-        a.button(href="/logout") #{__("Logout")} (#{user.username})
+        a.button(href=path + "/logout") #{__("Logout")} (#{user.username})
     div.row.dashboard
-      a(href="/admin/", class=page == 'status' ? 'current' : '')= __("Status")
-      a(href="/admin/users", class=page == 'users' ? 'current' : '')= __("Users")
-      a(href="/admin/groups", class=page == 'groups' ? 'current' : '')= __("Groups")
-      a(href="/admin/quizzes", class=page == 'quizzes' ? 'current' : '')= __("Quizzes")
-      a(href="/admin/flow", class=page == 'flow' ? 'current' : '')= __("Flow")
-      a(href="/admin/settings", class=page == 'settings' ? 'current' : '')= __("Site Settings")
+      a(href=path + "/admin/", class=page == 'status' ? 'current' : '')= __("Status")
+      a(href=path + "/admin/users", class=page == 'users' ? 'current' : '')= __("Users")
+      a(href=path + "/admin/groups", class=page == 'groups' ? 'current' : '')= __("Groups")
+      a(href=path + "/admin/quizzes", class=page == 'quizzes' ? 'current' : '')= __("Quizzes")
+      a(href=path + "/admin/flow", class=page == 'flow' ? 'current' : '')= __("Flow")
+      a(href=path + "/admin/settings", class=page == 'settings' ? 'current' : '')= __("Site Settings")
   div.container.admin
     div.row
       block view

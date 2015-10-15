@@ -3,12 +3,12 @@ extends layout
 block content
   div.header
     h3
-      a(href="/").title= title
+      a(href=path + "/").title= title
     nav
       if !user
-        a.button(href="/login")= __("Login")
+        a.button(href=path + "/login")= __("Login")
       else
-        a.button(href="/logout") #{__("Logout")} (#{user.username})
+        a.button(href=path + "/logout") #{__("Logout")} (#{user.username})
   div.container
     div.row
       h1= __('ERROR! ') + status + ' ' + message

@@ -77,7 +77,7 @@ module.exports.postNew = function (req, res, next) {
                     next(err);
                 } else {
                     req.flash('success', 'Quiz saved.');
-                    res.redirect('/admin/quizzes/' + quiz._id);
+                    res.redirect(config.path + '/admin/quizzes/' + quiz._id);
                 }
             });
         } else {
@@ -91,7 +91,7 @@ module.exports.postNew = function (req, res, next) {
                     next(err);
                 } else {
                     req.flash('success', 'Quiz created.');
-                    res.redirect('/admin/quizzes/');
+                    res.redirect(config.path + '/admin/quizzes/');
                     quizNameCache[quiz._id] = quiz.title;
                 }
             });
@@ -126,7 +126,7 @@ module.exports.delete = function (req, res, next) {
                 }
             });
             req.flash('success', 'Quiz removed.');
-            res.redirect('/admin/quizzes/');
+            res.redirect(config.path + '/admin/quizzes/');
         }
     });
 };

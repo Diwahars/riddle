@@ -8,8 +8,8 @@ block view
   if error && error.length
     p.error #{error}
   div.row
-    a#save-btn.button.button-primary.float-right(href="/admin/groups")= __("Save")
-    a#cancel-btn.button.float-right(href="/admin/groups")= __("Cancel")
+    a#save-btn.button.button-primary.float-right(href=path + "/admin/groups")= __("Save")
+    a#cancel-btn.button.float-right(href=path + "/admin/groups")= __("Cancel")
     h1#group-name.editable= data ? data.group.name : ''
   if data
     div.row
@@ -26,7 +26,7 @@ block view
               td
               td
                 a.remove-user(href="#", onclick="removeUser('" + userdata.username + "', '" + userdata._id + "')")= __("Remove")
-          form(action="/admin/groups/add", method="POST")
+          form(action=path + "/admin/groups/add", method="POST")
             tr
               td
                 input.key(type="text", name="username", placeholder=__("username"), required)
@@ -35,23 +35,23 @@ block view
               td
                 input.key.button.button-primary(type="submit", value=__("Add"))
     div.row
-      form#remove-form(action="/admin/groups/remove", method="POST")
+      form#remove-form(action=path + "/admin/groups/remove", method="POST")
         input(type="text", name="gid", value=data.group._id, style="display: none")
         input#remove-button.button.button-danger(type="button", value=__("Remove Group"))
   if !data
-    form#hide-form(action="/admin/groups/new", method="POST")
+    form#hide-form(action=path + "/admin/groups/new", method="POST")
       input#form-name(name="groupname", type="text")
   else
-    form#hide-form(action="/admin/groups/update", method="POST")
+    form#hide-form(action=path + "/admin/groups/update", method="POST")
       input#form-name(name="groupname", type="text")
       input(type="text", name="gid", value=data.group._id)
   if data
-    form#hide-form-2(action="/admin/groups/removeuser", method="POST", style="display: none")
+    form#hide-form-2(action=path + "/admin/groups/removeuser", method="POST", style="display: none")
       input#form-uid(name="uid", type="text")
       input(type="text", name="gid", value=data.group._id)
 
 block footer
-  script(type="text/javascript", src="/javascripts/medium-editor.min.js")
+  script(type="text/javascript", src=path + "/javascripts/medium-editor.min.js")
   script.
     var modified = false;
     function $$(sel) {

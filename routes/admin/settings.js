@@ -32,5 +32,5 @@ module.exports.save = function (req, res) {
         fs.writeFileSync(__dirname + '/../../config.json', JSON.stringify(config));
     }
     req.flash('message', 'Settings updated successfully.');
-    res.redirect('/admin/settings');
+    res.redirect(config.path + '/admin/settings');
 };

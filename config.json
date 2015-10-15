@@ -1,1 +1,1 @@
-{"title":"Riddle","mongodb":"mongodb://admin:admin@localhost:27017/riddle","items-per-page":100,"lang":"zh"}
+{"title":"复旦推理","path":"/x","mongodb":"mongodb://admin:admin@localhost:27017/riddle","items-per-page":100,"lang":"zh"}

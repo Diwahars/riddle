@@ -5,24 +5,24 @@ extends layout
 block content
   div.header
     h3
-      a(href="/").title= title
+      a(href=path + "/").title= title
     nav
       if !user
-        a.button(href="/login")= __("Login")
+        a.button(href=path + "/login")= __("Login")
       else
-        if user.group === 'admin'
-          a.button(href="/admin")= __("Admin")
-        a.button(href="/logout") #{__("Logout")} (#{user.username})
+        if user.group === path + '/admin'
+          a.button(href=path + "/admin")= __("Admin")
+        a.button(href=path + "/logout") #{__("Logout")} (#{user.username})
   div.container
     div.row
       if !user
         p Welcome to #{title}
-        a.button.button-primary(href="/register")= __("Register")
+        a.button.button-primary(href=path + "/register")= __("Register")
       else
-        a.button.float-right(href="/")= __("Back")
+        a.button.float-right(href=path + "/")= __("Back")
         h1= data.title
         div !{data.content}
-        form(action="/key", method="POST")
+        form(action=path + "/key", method="POST")
           input(name="key", type="text")
           input(name="qid", type="text", value=data._id, style="display:none")
           br

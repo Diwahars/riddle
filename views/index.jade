@@ -3,35 +3,36 @@ extends layout
 block content
   div.header
     h3
-      a(href="/").title= title
+      a(href=path + "/").title= title
     nav
       if !user
-        a.button(href="/login")= __("Login")
+        a.button(href=path + "/login")= __("Login")
       else
         if user.group === 'admin'
-          a.button(href="/admin")= __("Admin")
-        a.button(href="/logout") #{__("Logout")} (#{user.username})
+          a.button(href=path + "/admin")= __("Admin")
+        a.button(href=path + "/logout") #{__("Logout")} (#{user.username})
   div.container
     if success && success.length
       p.success #{success}
     if error && error.length
       p.error #{error}
     div.row
-      if !user || !user.gid
+      if !user
         p #{__("Welcome to")} #{title}
-        a.button.button-primary(href="/register")= __("Register")
+        a.button.button-primary(href=path + "/register")= __("Register")
         span= " "
-        a.button.button-primary(href="/login")= __("Login")
+        a.button.button-primary(href=path + "/login")= __("Login")
       else
-        p #{__("Hello")}, #{user.username}. #{__("Your group name is")} #{group.name}.
-        if group.lock > new Date()
-          p= __("Your group has been locked until ") + group.lock.toLocaleString() + "."
-        else
-          h3= __("Quizzes:")
-          if user.gid
+        if user.gid
+          p #{__("Hello")}, #{user.username}. #{__("Your group name is")} #{group.name}.
+          if group.lock > new Date()
+            p= __("Your group has been locked until ") + group.lock.toLocaleString() + "."
+          else
+            h3= __("Quizzes:")
+
             ul.quizzes-list
               each quiz in data
                 li
-                  a(href="/quiz/" + quiz._id)= quiz.title
-          else
-            p= __("Please contact us to join a group!")
+                  a(href=path + "/quiz/" + quiz._id)= quiz.title
+        else
+          p= __("Please contact us to join a group!")

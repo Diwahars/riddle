@@ -11,12 +11,12 @@ block view
   p= __("Please DO NOT modify it after game start!")
   div.row.flow
   div.row.data-table
-  form#hide-form(action="/admin/flow/save", method="POST")
+  form#hide-form(action=path + "/admin/flow/save", method="POST")
     input#form-data(name="data")
 
 block footer
-  script(type="text/javascript", src="/javascripts/d3.v3.min.js")
+  script(type="text/javascript", src=path + "/javascripts/d3.v3.min.js")
   script(type="text/javascript").
     var data = !{JSON.stringify(data)};
     var i18n = {'Quiz':'!{__("Quiz")}'};
-  script(type="text/javascript", src="/javascripts/flow.js")
+  script(type="text/javascript", src=path + "/javascripts/flow.js")

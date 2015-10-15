@@ -60,7 +60,7 @@ module.exports.save = function (req, res, next) {
                     } else {
                         if (--cnt == 0) {
                             req.flash('success', 'Saved successfully!');
-                            res.redirect('/admin/quizzes');
+                            res.redirect(config.path + '/admin/quizzes');
                         }
                     }
                 });
