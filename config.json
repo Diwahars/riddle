@@ -1,6 +1,1 @@
-{
-  "title": "Riddle",
-  "mongodb": "mongodb://admin:admin@localhost:27017/riddle",
-  "items-per-page": 100,
-  "lang": "zh"
-}
+{"title":"Riddle","mongodb":"mongodb://admin:admin@localhost:27017/riddle","items-per-page":100,"lang":"zh"}

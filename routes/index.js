@@ -3,8 +3,6 @@ var router   = express.Router();
 var passport = require('passport');
 var i18n     = require('i18n');
 
-var config = require('../config');
-
 var Quiz   = require('../models/quiz');
 var User   = require('../models/user');
 var Group  = require('../models/group');
@@ -13,6 +11,7 @@ var Record = require('../models/record');
 global.userNameCache  = {};
 global.quizNameCache  = {};
 global.groupNameCache = {};
+global.keyCache = [];
 
 User.find(function (err, users) {
     if (!err) {
@@ -26,6 +25,9 @@ Quiz.find(function (err, quizzes) {
     if (!err) {
         quizzes.forEach(function (quiz) {
             quizNameCache[quiz._id] = quiz.title;
+            quiz.next.forEach(function (ne) {
+                keyCache.push(ne.key);
+            });
         });
     }
 });
@@ -217,11 +219,30 @@ router.post('/key', function (req, res, next) {
                                     });
                                 }
                             } else {
-                                record.result = 'Wrong Answer';
-                                record.save(function () {
-                                    req.flash('error', i18n.__('Wrong Answer'));
-                                    res.redirect('/');
-                                });
+                                if (keyCache.indexOf(req.body.key) !== -1) {
+                                    // Cheat!
+                                    var date = new Date();
+                                    if (!group.lock_times) {
+                                        group.lock_times = 1;
+                                    } else {
+                                        group.lock_times++;
+                                    }
+                                    date.setHours(date.getHours() + group.lock_times * group.lock_times);
+                                    group.lock = date;
+                                    group.save(function () {
+                                        record.result = 'Cheat, lock ' + group.lock_times * group.lock_times + 'hr(s)';
+                                        record.save(function () {
+                                            req.flash('error', i18n.__('You cheat!'));
+                                            res.redirect('/');
+                                        });
+                                    });
+                                } else {
+                                    record.result = 'Wrong Answer';
+                                    record.save(function () {
+                                        req.flash('error', i18n.__('Wrong Answer'));
+                                        res.redirect('/');
+                                    });
+                                }
                             }
                         } else {
                             record.result = 'Permission Denied';

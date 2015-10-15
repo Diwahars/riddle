@@ -6,17 +6,21 @@ var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
 
 var Group = new Schema({
-    name:   {
+    name:       {
         type:    String,
         default: ''
     },
-    passed: {
+    passed:     {
         type:    [String],
         default: []
     },
-    lock:   {
+    lock:       {
         type:    Date,
         default: new Date(0)
+    },
+    lock_times: {
+        type:    Number,
+        default: 0
     }
 });
 

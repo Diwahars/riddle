@@ -51,5 +51,6 @@
 	"Your group has been locked until ": "你的队伍被锁定了……解锁时间：",
 	"lock": "锁定",
 	"Your group name is": "你的队伍是：",
-	"Log In": "登陆"
+	"Log In": "登陆",
+	"Settings": "Settings"
 }

@@ -17,7 +17,7 @@ router.get('/quizzes', quizzes.pages);
 router.get('/quizzes/new', quizzes.getNew);
 router.get('/quizzes/:id', quizzes.id);
 router.get('/flow', flow.sort);
-router.get('/settings', settings);
+router.get('/settings', settings.all);
 
 router.post('/quizzes/new', quizzes.postNew);
 router.post('/groups/new', groups.postNew);
@@ -29,5 +29,6 @@ router.post('/groups/unlock', groups.unlock);
 router.post('/groups/removeuser', groups.removeUser);
 router.post('/quizzes/delete/:id', quizzes.delete);
 router.post('/flow/save', flow.save);
+router.post('/settings', settings.save);
 
 module.exports = router;

@@ -11,7 +11,8 @@ var flash         = require('connect-flash');
 var LocalStrategy = require('passport-local').Strategy;
 var mongoose      = require('mongoose');
 var i18n          = require("i18n");
-var config        = require('./config.json');
+
+global.config = require('./config.json');
 
 var User = require('./models/user');
 
@@ -50,8 +51,8 @@ mongoose.connect(config.mongodb, function (err) {
 });
 
 i18n.configure({
-    locales: ['en', 'zh'],
-    cookie: 'locale',
+    locales:   ['en', 'zh'],
+    cookie:    'locale',
     directory: __dirname + '/locales'
 });
 

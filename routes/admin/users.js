@@ -5,7 +5,6 @@
 
 var mongoose = require('mongoose');
 
-var config = require('../../config.json');
 var User   = require('../../models/user');
 var Group  = require('../../models/group');
 

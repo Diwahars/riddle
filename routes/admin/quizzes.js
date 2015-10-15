@@ -5,7 +5,6 @@
 
 var mongoose = require('mongoose');
 
-var config = require('../../config.json');
 var Quiz   = require('../../models/quiz');
 
 module.exports.pages = function (req, res, next) {

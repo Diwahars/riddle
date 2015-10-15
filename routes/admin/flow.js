@@ -5,7 +5,6 @@
 
 var mongoose = require('mongoose');
 
-var config = require('../../config.json');
 var Quiz   = require('../../models/quiz');
 
 module.exports.sort = function (req, res, next) {
@@ -40,10 +39,14 @@ module.exports.save = function (req, res, next) {
     }
 
     var cnt = 0, scopeErr = null;
+    keyCache = [];
     for (var id in data) {
         if (data.hasOwnProperty(id)) {
             cnt++;
             if (!scopeErr) {
+                data[id].next.forEach(function (ne) {
+                    keyCache.push(ne.key);
+                });
                 Quiz.findByIdAndUpdate(id, {
                     start: data[id].start,
                     next:  data[id].next

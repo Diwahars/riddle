@@ -1,0 +1,21 @@
+//
+   Created by dsds on 10/15/15.
+extends admin
+
+block view
+  form(action="/admin/settings", method="POST")
+    input.button.button-primary.float-right(type="submit", value=__("Save"))
+    h1= __("Settings")
+    if message && message.length
+      p.success #{message}
+    label
+      p Site name
+      input(type="text", name="title", value=data.title)
+    label
+      p Language
+      select(name="lang")
+        option(value="zh", selected) Simplified Chinese
+        option(value="en") English
+
+block footer
+  script(type="text/javascript")
