@@ -16,6 +16,12 @@ block view
       select(name="lang")
         option(value="zh", selected) Simplified Chinese
         option(value="en") English
+    label
+      p Locking Starts At (hour, 0-23)
+      input(type="number", name="lts", value=data.lts)
+    label
+      p Locking Ends At (hour, 0-23)
+      input(type="number", name="lte", value=data.lte)
 
 block footer
   script(type="text/javascript")

@@ -14,7 +14,7 @@
         return i18n[str] ? i18n[str] : str;
     };
 
-    var width    = 960, height = 500;
+    var width    = 960, height = 800;
     var nodeData = {};
 
     var svg = d3.select('.flow').append('svg').attr('oncontextmenu', 'return false;').attr('width', width).attr('height', height);

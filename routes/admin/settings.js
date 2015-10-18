@@ -13,7 +13,9 @@ module.exports.all = function (req, res) {
         message: req.flash('message'),
         data:    {
             lang:  config.lang,
-            title: config.title
+            title: config.title,
+            lts: config['lock-time-start'],
+            lte: config['lock-time-end']
         }
     });
 };
@@ -27,6 +29,14 @@ module.exports.save = function (req, res) {
     if (['zh', 'en'].indexOf(req.body.lang) !== -1) {
         config.lang = req.body.lang;
         modified = true;
+    }
+    if (req.body.lts) {
+		config['lock-time-start'] = parseInt(req.body.lts);
+		modified = true;
+    }
+    if (req.body.lte) {
+		config['lock-time-end'] = parseInt(req.body.lte);
+		modified = true;
     }
     if (modified) {
         fs.writeFileSync(__dirname + '/../../config.json', JSON.stringify(config));

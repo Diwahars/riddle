@@ -19,7 +19,7 @@
 	"username": "用户名",
 	"created at": "创建时间",
 	"group": "用户组",
-	"Please contact us to join a group!": "请先联系我们分配一个队伍",
+	"Please contact us to join a group!": "请先联系我们分配一个队伍（已发送过组队信息的同学请无视这一条）",
 	"Groups": "组队",
 	"groupname": "队伍名",
 	"Please DO NOT modify it after game start!": "游戏开始后请勿更改本页设置！可能导致奇怪的问题",
@@ -52,5 +52,10 @@
 	"lock": "锁定",
 	"Your group name is": "你的队伍是：",
 	"Log In": "登陆",
-	"Settings": "Settings"
+	"Settings": "Settings",
+	"Accepted": "Accepted",
+	"Please join a group first": "Please join a group first",
+	"Quiz id error or empty key!": "Quiz id error or empty key!",
+	"You cheat!": "You cheat!",
+	"Wrong Answer": "Wrong Answer"
 }

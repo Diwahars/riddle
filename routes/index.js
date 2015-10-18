@@ -147,8 +147,8 @@ router.get('/login', function (req, res) {
 });
 
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
+    successRedirect: config.path + '/',
+    failureRedirect: config.path + '/login',
     failureFlash:    'Invalid username or password.'
 }), function (req, res) {
     res.redirect(config.path + '/');
@@ -163,6 +163,20 @@ router.post('/key', function (req, res, next) {
     if (!req.user) {
         return next(new Error(i18n.__('Not authorized, permission denied ;)')));
     } else {
+    	var h = (new Date()).getHours();
+    	if (config['lock-time-start'] < config['lock-time-end']) {
+    		if (config['lock-time-start'] <= h && h < config['lock-time-end']) {
+    			req.flash('error', i18n.__('Sorry, system not open at present.'));
+				res.redirect(config.path + '/');
+				return;
+    		}
+    	} else {
+			if (config['lock-time-start'] <= h || h < config['lock-time-end']) {
+    			req.flash('error', i18n.__('Sorry, system not open at present.'));
+				res.redirect(config.path + '/');
+				return;
+    		}
+    	}
         if (!req.body.qid || !req.body.key) {
             return next(new Error(i18n.__('Quiz id error or empty key!')));
         }
@@ -194,30 +208,43 @@ router.post('/key', function (req, res, next) {
                         }
                         // Validate
                         if (group.passed.indexOf(req.body.qid) !== -1 || quiz.start) {
-                            var nextId = '';
+                            var nextId = [];
                             quiz.next.forEach(function (sibling) {
                                 if (sibling.key.toString() === String(req.body.key || '')) {
-                                    nextId = sibling.id;
+									nextId.push(sibling.id);
                                 }
                             });
-                            if (nextId) {
+                            if (nextId.length == 1) {
                                 // passed
-                                if (group.passed.indexOf(nextId) !== -1) {
+                                if (group.passed.indexOf(nextId[0]) !== -1) {
                                     record.result = 'Accepted (again)';
                                     record.save(function () {
-                                        req.flash('success', i18n.__('Accepted, you\' already passed this level'));
+										req.flash('success', i18n.__('Accepted, you\' already passed this level'));
                                         res.redirect(config.path + '/');
                                     });
                                 } else {
                                     record.result = 'Accepted';
                                     record.save(function () {
-                                        group.passed.push(nextId);
+                                        group.passed.push(nextId[0]);
                                         group.save(function () {
                                             req.flash('success', i18n.__('Accepted'));
                                             res.redirect(config.path + '/');
                                         });
                                     });
                                 }
+							} else if (nextId.length > 1) {
+								record.result = 'Accepted (unlock ' + nextId.length + ' levels)';
+								record.save(function () {
+									nextId.forEach(function (id) {
+										if (group.passed.indexOf(id) == -1) {
+											group.passed.push(id);
+										}
+									});
+									group.save(function () {
+										req.flash('success', i18n.__('Accepted'));
+										res.redirect(config.path + '/');
+									});
+								});
                             } else {
                                 if (keyCache.indexOf(req.body.key) !== -1) {
                                     // Cheat!

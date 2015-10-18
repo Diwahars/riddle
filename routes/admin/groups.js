@@ -207,14 +207,16 @@ module.exports.unlock = function (req, res, next) {
         req.flash('error', 'Wrong group.');
         res.redirect(config.path + '/admin/groups');
     } else {
-        var date = new Date(0);
-        Group.findByIdAndUpdate(req.body.gid, {lock: date}, function (err) {
-            if (err) {
-                next(err);
-            } else {
+        Group.findById(req.body.gid, function (err, group) {
+        	if (err || !group) {
+        		return next(err);
+        	}
+        	group.lock = new Date(0);
+        	group.lock_times = group.lock_times ? group.lock_times - 1 : 0;
+        	group.save(function () {
                 req.flash('success', 'Group unlocked');
                 res.redirect(config.path + '/admin/groups/');
-            }
+        	});
         });
     }
 };
