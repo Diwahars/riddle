@@ -11,7 +11,7 @@ var Record = require('../models/record');
 global.userNameCache  = {};
 global.quizNameCache  = {};
 global.groupNameCache = {};
-global.keyCache = [];
+global.keyCache       = [];
 
 User.find(function (err, users) {
     if (!err) {
@@ -159,24 +159,40 @@ router.get('/logout', function (req, res) {
     res.redirect(config.path + '/');
 });
 
+router.get('/rank', function (req, res) {
+    Group.find().exec(function (err, groups) {
+        if (err) {
+            return next(err);
+        }
+        groups.sort(function (a, b) {
+            return b.passed.length - a.passed.length;
+        });
+        res.render('rank', {
+            title: config.title,
+            user:  req.user,
+            data:  groups.slice(0, 20)
+        });
+    });
+});
+
 router.post('/key', function (req, res, next) {
     if (!req.user) {
         return next(new Error(i18n.__('Not authorized, permission denied ;)')));
     } else {
-    	var h = (new Date()).getHours();
-    	if (config['lock-time-start'] < config['lock-time-end']) {
-    		if (config['lock-time-start'] <= h && h < config['lock-time-end']) {
-    			req.flash('error', i18n.__('Sorry, system not open at present.'));
-				res.redirect(config.path + '/');
-				return;
-    		}
-    	} else {
-			if (config['lock-time-start'] <= h || h < config['lock-time-end']) {
-    			req.flash('error', i18n.__('Sorry, system not open at present.'));
-				res.redirect(config.path + '/');
-				return;
-    		}
-    	}
+        var h = (new Date()).getHours();
+        if (config['lock-time-start'] < config['lock-time-end']) {
+            if (config['lock-time-start'] <= h && h < config['lock-time-end']) {
+                req.flash('error', i18n.__('Sorry, system not open at present.'));
+                res.redirect(config.path + '/');
+                return;
+            }
+        } else {
+            if (config['lock-time-start'] <= h || h < config['lock-time-end']) {
+                req.flash('error', i18n.__('Sorry, system not open at present.'));
+                res.redirect(config.path + '/');
+                return;
+            }
+        }
         if (!req.body.qid || !req.body.key) {
             return next(new Error(i18n.__('Quiz id error or empty key!')));
         }
@@ -211,7 +227,7 @@ router.post('/key', function (req, res, next) {
                             var nextId = [];
                             quiz.next.forEach(function (sibling) {
                                 if (sibling.key.toString() === String(req.body.key || '')) {
-									nextId.push(sibling.id);
+                                    nextId.push(sibling.id);
                                 }
                             });
                             if (nextId.length == 1) {
@@ -219,7 +235,7 @@ router.post('/key', function (req, res, next) {
                                 if (group.passed.indexOf(nextId[0]) !== -1) {
                                     record.result = 'Accepted (again)';
                                     record.save(function () {
-										req.flash('success', i18n.__('Accepted, you\' already passed this level'));
+                                        req.flash('success', i18n.__('Accepted, you\' already passed this level'));
                                         res.redirect(config.path + '/');
                                     });
                                 } else {
@@ -232,23 +248,23 @@ router.post('/key', function (req, res, next) {
                                         });
                                     });
                                 }
-							} else if (nextId.length > 1) {
-								record.result = 'Accepted (unlock ' + nextId.length + ' levels)';
-								record.save(function () {
-									nextId.forEach(function (id) {
-										if (group.passed.indexOf(id) == -1) {
-											group.passed.push(id);
-										}
-									});
-									group.save(function () {
-										req.flash('success', i18n.__('Accepted'));
-										res.redirect(config.path + '/');
-									});
-								});
+                            } else if (nextId.length > 1) {
+                                record.result = 'Accepted (unlock ' + nextId.length + ' levels)';
+                                record.save(function () {
+                                    nextId.forEach(function (id) {
+                                        if (group.passed.indexOf(id) == -1) {
+                                            group.passed.push(id);
+                                        }
+                                    });
+                                    group.save(function () {
+                                        req.flash('success', i18n.__('Accepted'));
+                                        res.redirect(config.path + '/');
+                                    });
+                                });
                             } else {
                                 if (keyCache.indexOf(req.body.key) !== -1) {
                                     // Cheat!
-                                    var date = new Date();
+                                    var date   = new Date();
                                     if (!group.lock_times) {
                                         group.lock_times = 1;
                                     } else {

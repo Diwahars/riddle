@@ -10,6 +10,7 @@ block content
       else
         if user.group === 'admin'
           a.button(href=path + "/admin")= __("Admin")
+        a.button(href=path + "/rank") #{__("Rank")}
         a.button(href=path + "/logout") #{__("Logout")} (#{user.username})
   div.container
     if success && success.length

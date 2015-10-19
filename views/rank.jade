@@ -1,0 +1,30 @@
+//
+   Created by dsds on 10/19/15.
+
+extends layout
+block content
+  div.header
+    h3
+      a(href=path + "/").title= title
+    nav
+      if !user
+        a.button(href=path + "/login")= __("Login")
+      else
+        if user.group === 'admin'
+          a.button(href=path + "/admin")= __("Admin")
+        a.button(href=path + "/rank") #{__("Rank")}
+        a.button(href=path + "/logout") #{__("Logout")} (#{user.username})
+  div.container
+    h1= __("Ranking")
+    table.u-full-width
+      thead
+        tr
+          th №
+          th= __("groupname")
+          th= __("passed levels")
+      tbody
+        each group, index in data
+          tr
+            td= index + 1
+            td= group.name
+            td= group.passed.length
